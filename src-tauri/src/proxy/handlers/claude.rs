@@ -22,6 +22,11 @@ use std::sync::atomic::Ordering;
 const MAX_RETRY_ATTEMPTS: usize = 3;
 const MIN_SIGNATURE_LENGTH: usize = 10;  // 最小有效签名长度
 
+// ===== Model Constants for Background Tasks =====
+// These can be adjusted for performance/cost optimization
+const BACKGROUND_MODEL_LITE: &str = "gemini-2.5-flash-lite";  // For simple/lightweight tasks
+const BACKGROUND_MODEL_STANDARD: &str = "gemini-2.5-flash";   // For complex background tasks
+
 // ===== Thinking 块处理辅助函数 =====
 
 use crate::proxy::mappers::claude::models::{ContentBlock, Message, MessageContent};
@@ -1018,11 +1023,11 @@ fn extract_last_user_message_for_detection(request: &ClaudeRequest) -> Option<St
 /// 根据后台任务类型选择合适的模型
 fn select_background_model(task_type: BackgroundTaskType) -> &'static str {
     match task_type {
-        BackgroundTaskType::TitleGeneration => "gemini-2.5-flash-lite",  // 极简任务
-        BackgroundTaskType::SimpleSummary => "gemini-2.5-flash-lite",    // 简单摘要
-        BackgroundTaskType::SystemMessage => "gemini-2.5-flash-lite",    // 系统消息
-        BackgroundTaskType::PromptSuggestion => "gemini-2.5-flash-lite", // 建议生成
-        BackgroundTaskType::EnvironmentProbe => "gemini-2.5-flash-lite", // 环境探测
-        BackgroundTaskType::ContextCompression => "gemini-2.5-flash",   // 复杂压缩
+        BackgroundTaskType::TitleGeneration => BACKGROUND_MODEL_LITE,     // 极简任务
+        BackgroundTaskType::SimpleSummary => BACKGROUND_MODEL_LITE,       // 简单摘要
+        BackgroundTaskType::SystemMessage => BACKGROUND_MODEL_LITE,       // 系统消息
+        BackgroundTaskType::PromptSuggestion => BACKGROUND_MODEL_LITE,    // 建议生成
+        BackgroundTaskType::EnvironmentProbe => BACKGROUND_MODEL_LITE,    // 环境探测
+        BackgroundTaskType::ContextCompression => BACKGROUND_MODEL_STANDARD, // 复杂压缩
     }
 }
