@@ -27,6 +27,7 @@
 
   <p>
     <a href="./README.md">简体中文</a> | 
+    <a href="./README_TW.md">繁體中文</a> |
     <strong>English</strong>
   </p>
 </div>

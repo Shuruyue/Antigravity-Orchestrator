@@ -486,7 +486,18 @@
             "gemini3_only_warning": "⚠️ Gemini 3 series only",
             "default_suffix": " (Default)",
             "original_id": "Original ID",
-            "route_to": "Route To"
+            "route_to": "Route To",
+            "haiku_tip": {
+                "title": "💰 Cost-Saving Tip:",
+                "content": "Claude CLI defaults to {{model}} for background tasks. Mapping to a cheaper Flash model can save ~95% cost.",
+                "button": "One-Click Optimize"
+            },
+            "model_quality": {
+                "high": "High Quality",
+                "balanced": "Balanced",
+                "fast": "Fast",
+                "recommended": "Recommended"
+            }
         },
         "multi_protocol": {
             "title": "Multi-Protocol Support",

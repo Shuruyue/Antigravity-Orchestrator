@@ -495,7 +495,18 @@
             "current_list": "目前對應清單 (Custom List)",
             "no_custom_mapping": "尚無自訂精確對應",
             "gemini3_only_warning": "⚠️ 僅支援 Gemini 3 系列",
-            "default_suffix": "（預設）"
+            "default_suffix": "（預設）",
+            "haiku_tip": {
+                "title": "💰 省錢提示：",
+                "content": "Claude CLI 預設使用 {{model}} 處理背景任務，建議對應到較便宜的 Flash 模型可節省約 95% 成本",
+                "button": "一鍵最佳化"
+            },
+            "model_quality": {
+                "high": "高品質",
+                "balanced": "均衡",
+                "fast": "快速",
+                "recommended": "推薦"
+            }
         },
         "examples": {
             "title": "使用範例"

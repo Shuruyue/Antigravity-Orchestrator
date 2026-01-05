@@ -495,7 +495,18 @@
             "current_list": "当前映射列表 (Custom List)",
             "no_custom_mapping": "暂无自定义精确映射",
             "gemini3_only_warning": "⚠️ 仅支持 Gemini 3 系列",
-            "default_suffix": "（默认）"
+            "default_suffix": "（默认）",
+            "haiku_tip": {
+                "title": "💰 省钱提示:",
+                "content": "Claude CLI 默认使用 {{model}} 处理后台任务,建议映射到廉价 Flash 模型可节省约 95% 成本",
+                "button": "一键优化"
+            },
+            "model_quality": {
+                "high": "高质量",
+                "balanced": "均衡",
+                "fast": "快速",
+                "recommended": "推荐"
+            }
         },
         "examples": {
             "title": "使用示例"
