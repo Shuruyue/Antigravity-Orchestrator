@@ -1,10 +1,10 @@
+use crate::modules::oauth;
+use std::sync::{Mutex, OnceLock};
+use tauri::Url;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::TcpListener;
 use tokio::sync::oneshot;
 use tokio::sync::watch;
-use std::sync::{Mutex, OnceLock};
-use tauri::Url;
-use crate::modules::oauth;
 
 struct OAuthFlowState {
     auth_url: String,
@@ -23,8 +23,8 @@ fn oauth_success_html() -> &'static str {
     "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\n\r\n\
     <html>\
     <body style='font-family: sans-serif; text-align: center; padding: 50px;'>\
-        <h1 style='color: green;'>✅ 授权成功!</h1>\
-        <p>您可以关闭此窗口返回应用。</p>\
+        <h1 style='color: green;'>✅ Authorization Successful! / 授權成功！</h1>\
+        <p>You can close this window and return to the app.<br/>您可以關閉此視窗並返回應用程式。</p>\
         <script>setTimeout(function() { window.close(); }, 2000);</script>\
     </body>\
     </html>"
@@ -34,8 +34,8 @@ fn oauth_fail_html() -> &'static str {
     "HTTP/1.1 400 Bad Request\r\nContent-Type: text/html; charset=utf-8\r\n\r\n\
     <html>\
     <body style='font-family: sans-serif; text-align: center; padding: 50px;'>\
-        <h1 style='color: red;'>❌ 授权失败</h1>\
-        <p>未能获取授权 Code，请返回应用重试。</p>\
+        <h1 style='color: red;'>❌ Authorization Failed / 授權失敗</h1>\
+        <p>Could not retrieve authorization code. Please return to the app and try again.<br/>無法取得授權碼，請返回應用程式重試。</p>\
     </body>\
     </html>"
 }
@@ -150,7 +150,10 @@ async fn ensure_oauth_flow_prepared(app_handle: &tauri::AppHandle) -> Result<Str
 
                 let (result, response_html) = match code {
                     Some(code) => (Ok(code), oauth_success_html()),
-                    None => (Err("未能在回调中获取 Authorization Code".to_string()), oauth_fail_html()),
+                    None => (
+                        Err("未能在回调中获取 Authorization Code".to_string()),
+                        oauth_fail_html(),
+                    ),
                 };
                 let _ = stream.write_all(response_html.as_bytes()).await;
                 let _ = stream.flush().await;
@@ -188,7 +191,10 @@ async fn ensure_oauth_flow_prepared(app_handle: &tauri::AppHandle) -> Result<Str
 
                 let (result, response_html) = match code {
                     Some(code) => (Ok(code), oauth_success_html()),
-                    None => (Err("未能在回调中获取 Authorization Code".to_string()), oauth_fail_html()),
+                    None => (
+                        Err("未能在回调中获取 Authorization Code".to_string()),
+                        oauth_fail_html(),
+                    ),
                 };
                 let _ = stream.write_all(response_html.as_bytes()).await;
                 let _ = stream.flush().await;
@@ -233,7 +239,9 @@ pub fn cancel_oauth_flow() {
 }
 
 /// 启动 OAuth 流程并等待回调，再交换 token
-pub async fn start_oauth_flow(app_handle: tauri::AppHandle) -> Result<oauth::TokenResponse, String> {
+pub async fn start_oauth_flow(
+    app_handle: tauri::AppHandle,
+) -> Result<oauth::TokenResponse, String> {
     // 确保已准备好 URL + listener（这样即使用户先授权，也不会卡住）
     let auth_url = ensure_oauth_flow_prepared(&app_handle).await?;
 
@@ -277,7 +285,9 @@ pub async fn start_oauth_flow(app_handle: tauri::AppHandle) -> Result<oauth::Tok
 /// Завершить OAuth flow без открытия браузера.
 /// Предполагается, что пользователь открыл ссылку вручную (или ранее была открыта),
 /// а мы только ждём callback и обмениваем code на token.
-pub async fn complete_oauth_flow(app_handle: tauri::AppHandle) -> Result<oauth::TokenResponse, String> {
+pub async fn complete_oauth_flow(
+    app_handle: tauri::AppHandle,
+) -> Result<oauth::TokenResponse, String> {
     // Ensure URL + listeners exist
     let _ = ensure_oauth_flow_prepared(&app_handle).await?;
 
