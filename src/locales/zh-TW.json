@@ -1,0 +1,573 @@
+{
+    "common": {
+        "loading": "載入中...",
+        "add": "新增",
+        "action": "操作",
+        "save": "儲存",
+        "saved": "儲存成功",
+        "cancel": "取消",
+        "confirm": "確認",
+        "delete": "刪除",
+        "edit": "編輯",
+        "refresh": "重新整理",
+        "refreshing": "重新整理中...",
+        "export": "匯出",
+        "import": "匯入",
+        "success": "成功",
+        "error": "錯誤",
+        "unknown": "未知",
+        "warning": "警告",
+        "info": "提示",
+        "details": "詳情",
+        "clear": "清除",
+        "prev_page": "上一頁",
+        "next_page": "下一頁",
+        "pagination_info": "顯示第 {{start}} 至 {{end}} 筆，共 {{total}} 筆",
+        "per_page": "每頁",
+        "items": "筆",
+        "accounts": "個帳號"
+    },
+    "nav": {
+        "dashboard": "儀表板",
+        "accounts": "帳號管理",
+        "proxy": "API 代理",
+        "settings": "設定"
+    },
+    "dashboard": {
+        "hello": "您好，使用者 👋",
+        "refresh_quota": "重新整理配額",
+        "refreshing": "重新整理中...",
+        "total_accounts": "帳號總數",
+        "avg_gemini": "Gemini 平均配額",
+        "avg_gemini_image": "Gemini 繪圖平均配額",
+        "avg_claude": "Claude 平均配額",
+        "low_quota_accounts": "低配額帳號",
+        "quota_sufficient": "✓ 配額充足",
+        "quota_low": "⚠ 配額偏低",
+        "quota_desc": "配額 < 20%",
+        "current_account": "目前帳號",
+        "switch_account": "切換帳號",
+        "no_active_account": "尚無啟用帳號",
+        "best_accounts": "最佳帳號推薦",
+        "best_account_recommendation": "最佳帳號推薦",
+        "switch_best": "一鍵切換最佳",
+        "switch_successfully": "一鍵切換最佳",
+        "view_all_accounts": "檢視所有帳號",
+        "export_data": "匯出帳號資料",
+        "for_gemini": "用於 Gemini",
+        "for_claude": "用於 Claude",
+        "toast": {
+            "switch_success": "切換成功！",
+            "switch_error": "切換帳號失敗",
+            "refresh_success": "配額重新整理成功",
+            "refresh_error": "重新整理失敗",
+            "export_no_accounts": "沒有可匯出的帳號",
+            "export_success": "匯出成功！檔案已儲存至：{{path}}",
+            "export_error": "匯出失敗"
+        }
+    },
+    "accounts": {
+        "search_placeholder": "搜尋電子郵件...",
+        "all": "全部",
+        "available": "可用",
+        "low_quota": "低配額",
+        "ultra": "ULTRA",
+        "pro": "PRO",
+        "free": "FREE",
+        "add_account": "新增帳號",
+        "refresh_all": "全部重新整理",
+        "refresh_selected": "重新整理 ({{count}})",
+        "export_selected": "匯出 ({{count}})",
+        "delete_selected": "刪除 ({{count}})",
+        "current": "目前",
+        "current_badge": "目前",
+        "disabled": "已停用",
+        "disabled_tooltip": "帳號已被停用（例如 refresh_token 已撤銷/過期）。重新授權或更新 Token 後即可恢復。",
+        "proxy_disabled": "代理已停用",
+        "proxy_disabled_tooltip": "此帳號已被手動停用代理功能，不參與 API 請求，但仍可在應用程式中使用",
+        "enable_proxy": "啟用代理",
+        "disable_proxy": "停用代理",
+        "forbidden": "403",
+        "forbidden_badge": "403",
+        "forbidden_tooltip": "API 回傳 403 Forbidden，帳號無權使用 Gemini Code Assist",
+        "forbidden_msg": "帳號無權限，已略過自動重新整理",
+        "no_data": "無資料",
+        "last_used": "上次使用",
+        "reset_time": "重置時間",
+        "switch_to": "切換至此帳號",
+        "actions": "操作",
+        "details": {
+            "title": "配額詳情"
+        },
+        "add": {
+            "title": "新增帳號",
+            "tabs": {
+                "oauth": "OAuth 授權",
+                "token": "Refresh Token",
+                "import": "從資料庫匯入"
+            },
+            "oauth": {
+                "recommend": "推薦方式",
+                "desc": "將開啟預設瀏覽器進行 Google 登入授權，自動取得並儲存 Token。",
+                "btn_start": "開始 OAuth 授權",
+                "btn_waiting": "正在等待授權...",
+                "btn_finish": "我已授權，繼續",
+                "copy_link": "複製授權連結",
+                "copied": "已複製",
+                "link_label": "授權連結",
+                "link_click_to_copy": "點擊複製"
+            },
+            "token": {
+                "label": "Refresh Token",
+                "placeholder": "在此處貼上您的 Refresh Token（支援批次）\n\n支援格式：\n1. 單一 Token (1//...)\n2. JSON 陣列（含 refresh_token 欄位）\n3. 任何包含 Token 的文字（自動擷取）",
+                "hint": "提示：支援一次貼上多個 Token 或 JSON 陣列，系統將自動辨識並批次匯入。",
+                "error_token": "請填寫 Refresh Token",
+                "batch_progress": "正在匯入第 {{current}}/{{total}} 個帳號...",
+                "batch_success": "成功匯入 {{count}} 個帳號",
+                "batch_partial": "匯入完成：{{success}} 個成功，{{fail}} 個失敗",
+                "batch_fail": "匯入失敗"
+            },
+            "import": {
+                "scheme_a": "方案 A：從目前 IDE 資料庫",
+                "scheme_a_desc": "自動從本機 Antigravity 資料庫讀取目前登入的帳號資訊。",
+                "btn_db": "匯入目前登入帳號",
+                "or": "或者",
+                "scheme_b": "方案 B：從 V1 版本備份",
+                "scheme_b_desc": "掃描 ~/.antigravity-agent 目錄，批次匯入舊版本的帳號資料。",
+                "btn_v1": "從 V1 備份批次匯入",
+                "btn_custom_db": "從自訂 DB 匯入"
+            },
+            "btn_cancel": "取消",
+            "btn_confirm": "確認新增",
+            "status": {
+                "error_token": "請填寫 Refresh Token"
+            }
+        },
+        "table": {
+            "email": "電子郵件",
+            "quota": "模型配額",
+            "last_used": "上次使用",
+            "actions": "操作"
+        },
+        "drag_to_reorder": "拖曳排序",
+        "empty": {
+            "title": "尚無帳號",
+            "desc": "點擊上方「新增帳號」按鈕新增第一個帳號"
+        },
+        "views": {
+            "list": "清單檢視",
+            "grid": "網格檢視"
+        },
+        "dialog": {
+            "add_title": "新增帳號",
+            "batch_delete_title": "批次刪除確認",
+            "delete_title": "刪除確認",
+            "batch_delete_msg": "確定要刪除選取的 {{count}} 個帳號嗎？此操作無法復原。",
+            "delete_msg": "確定要刪除此帳號嗎？此操作無法復原。",
+            "refresh_title": "重新整理配額",
+            "batch_refresh_title": "批次重新整理",
+            "refresh_msg": "確定要重新整理目前帳號的配額嗎？",
+            "batch_refresh_msg": "確定要重新整理選取的 {{count}} 個帳號的配額嗎？這可能需要一些時間。",
+            "disable_proxy_title": "停用代理",
+            "disable_proxy_msg": "確定要停用此帳號的代理功能嗎？帳號仍可在應用程式中使用。",
+            "enable_proxy_title": "啟用代理",
+            "enable_proxy_msg": "確定要重新啟用此帳號的代理功能嗎？"
+        }
+    },
+    "settings": {
+        "save": "儲存設定",
+        "tabs": {
+            "general": "一般",
+            "account": "帳號",
+            "proxy": "代理設定",
+            "advanced": "進階",
+            "about": "關於"
+        },
+        "general": {
+            "title": "一般設定",
+            "language": "語言",
+            "theme": "主題",
+            "theme_light": "淺色",
+            "theme_dark": "深色",
+            "theme_system": "跟隨系統",
+            "auto_launch": "開機自動啟動",
+            "auto_launch_enabled": "啟用",
+            "auto_launch_disabled": "停用",
+            "auto_launch_desc": "系統啟動時自動執行 Antigravity Tools"
+        },
+        "account": {
+            "title": "帳號設定",
+            "auto_refresh": "自動重新整理配額",
+            "auto_refresh_desc": "定期自動重新整理所有帳號的配額資訊",
+            "refresh_interval": "重新整理間隔（分鐘）",
+            "auto_sync": "自動取得目前帳號",
+            "auto_sync_desc": "定期自動同步目前啟用帳號資訊",
+            "sync_interval": "同步間隔（秒）"
+        },
+        "proxy": {
+            "title": "代理設定"
+        },
+        "advanced": {
+            "title": "進階設定",
+            "export_path": "預設匯出路徑",
+            "export_path_placeholder": "未設定（每次詢問）",
+            "default_export_path_desc": "設定後，匯出檔案將直接儲存至該目錄，不再彈出選擇框",
+            "select_btn": "選擇",
+            "open_btn": "開啟",
+            "data_dir": "資料目錄",
+            "data_dir_desc": "帳號資料和設定檔的儲存位置",
+            "antigravity_path": "反重力程式路徑",
+            "antigravity_path_placeholder": "未設定（將使用自動偵測）",
+            "antigravity_path_desc": "如果您將 Antigravity 應用程式安裝在非標準位置，可在此手動指定可執行檔路徑（macOS 指向 .app 目錄）。",
+            "antigravity_path_select": "選擇反重力程式可執行檔",
+            "antigravity_path_detected": "已更新偵測到的路徑",
+            "detect_btn": "偵測",
+            "antigravity_args": "反重力程式啟動參數",
+            "antigravity_args_placeholder": "--user-data-dir=/path/to/data --some-other-flag",
+            "antigravity_args_desc": "為 Antigravity 程式指定啟動參數，例如 --user-data-dir 用於指定使用者資料目錄",
+            "detect_args_btn": "偵測",
+            "antigravity_args_detected": "啟動參數已更新",
+            "antigravity_args_detect_error": "偵測啟動參數失敗",
+            "accounts_page_size": "帳號清單分頁大小",
+            "page_size_auto": "自動計算（推薦）",
+            "page_size_desc": "設定每頁顯示的帳號數量。選擇自動計算將根據視窗大小動態調整。",
+            "logs_title": "記錄維護",
+            "logs_desc": "清理應用程式產生的記錄快取檔案，不會影響帳號資料。",
+            "clear_logs": "清理記錄快取",
+            "clear_logs_title": "清理記錄確認",
+            "clear_logs_msg": "確定要清理所有記錄快取檔案嗎？",
+            "logs_cleared": "記錄快取已清理"
+        },
+        "about": {
+            "title": "關於",
+            "version": "應用程式版本",
+            "tech_stack": "技術棧",
+            "author": "作者",
+            "wechat": "微信公眾號",
+            "github": "開源位址",
+            "view_code": "檢視程式碼",
+            "copyright": "Copyright © 2025-2026 Antigravity. All rights reserved.",
+            "check_update": "檢查更新",
+            "checking_update": "檢查中...",
+            "latest_version": "已是最新版本",
+            "new_version_available": "發現新版本 {{version}}",
+            "download_update": "前往下載",
+            "update_check_failed": "檢查更新失敗"
+        }
+    },
+    "tray": {
+        "current": "目前",
+        "quota": "配額",
+        "switch_next": "切換至下一個帳號",
+        "refresh_current": "重新整理目前帳號配額",
+        "show_window": "顯示主視窗",
+        "quit": "結束應用程式 (Exit)",
+        "no_account": "無帳號",
+        "unknown_quota": "未知（點擊重新整理）",
+        "forbidden": "帳號已封鎖"
+    },
+    "proxy": {
+        "title": "API 代理服務",
+        "status": {
+            "running": "服務執行中",
+            "stopped": "服務已停止",
+            "accounts_available": "{{count}} 個帳號可用",
+            "processing": "處理中..."
+        },
+        "action": {
+            "start": "啟動服務",
+            "stop": "停止服務"
+        },
+        "config": {
+            "title": "服務設定",
+            "port": "監聽連接埠",
+            "port_tooltip": "本機 API 代理監聽的連接埠。需要先停止服務再修改，修改後需重新啟動生效。",
+            "port_hint": "預設 8045，修改連接埠需重新啟動服務",
+            "auto_start": "隨應用程式自動啟動",
+            "auto_start_tooltip": "應用程式啟動時自動啟動本機 API 代理服務。",
+            "allow_lan_access": "允許區域網路存取",
+            "allow_lan_access_tooltip": "開啟後繫結到 0.0.0.0，區域網路其他裝置也能存取。建議同時開啟驗證並妥善保管 API 金鑰；修改後需重新啟動生效。",
+            "allow_lan_access_hint_enabled": "🌐 監聽 0.0.0.0，區域網路裝置可存取",
+            "allow_lan_access_hint_disabled": "🔒 僅監聽 127.0.0.1，僅本機可存取（隱私優先）",
+            "allow_lan_access_warning": "⚠️ 開啟後區域網路內其他裝置可存取，請確保 API 金鑰安全",
+            "allow_lan_access_restart_hint": "ℹ️ 需要重新啟動服務後生效",
+            "api_key": "API 金鑰",
+            "api_key_tooltip": "啟用驗證後，用戶端存取代理所需的共用金鑰。重新產生會立即使舊金鑰失效。",
+            "btn_regenerate": "重新產生金鑰",
+            "btn_copy": "複製",
+            "btn_copied": "已複製",
+            "warning_key": "注意：請妥善保管您的 API 金鑰，不要洩漏給他人。",
+            "auth": {
+                "title": "存取授權",
+                "title_tooltip": "控制代理是否需要驗證，以及哪些路由需要提供 API 金鑰。",
+                "enabled": "已啟用",
+                "enabled_tooltip": "快速開關驗證（透過切換驗證模式實現）。開啟後用戶端需在請求標頭提供 Authorization: Bearer <API_KEY> 或 x-api-key。",
+                "mode": "模式",
+                "mode_tooltip": "選擇驗證涵蓋範圍：關閉=不驗證；全域=所有介面都需金鑰；除健康檢查外=/healthz 不驗證；自動=本機模式預設關閉，區域網路模式預設「除健康檢查外」。",
+                "hint": "開啟後用戶端需透過 Authorization: Bearer ... 傳入 API 金鑰（如選擇「除健康檢查外」則 /healthz 免驗證）。",
+                "modes": {
+                    "off": "關閉（開放）",
+                    "strict": "全域（嚴格）",
+                    "all_except_health": "全域（除健康檢查外）",
+                    "auto": "自動（推薦）"
+                }
+            },
+            "zai": {
+                "title": "z.ai（GLM）提供者",
+                "title_tooltip": "為 Claude 協定提供可選的 Anthropic 相容上游（z.ai）。只影響 Claude 協定請求，Google 帳號池仍按原邏輯運作。",
+                "subtitle": "可選的 Anthropic 相容上游，僅用於 Claude 協定請求。",
+                "enabled": "已啟用",
+                "enabled_tooltip": "啟用後，Claude 協定請求將按「分發模式」路由到 z.ai。",
+                "base_url": "Base URL",
+                "base_url_tooltip": "z.ai Anthropic 相容介面的基礎位址。預設 https://api.z.ai/api/anthropic，代理會在其後拼接 /v1/messages 等路徑。",
+                "dispatch_mode": "分發模式",
+                "dispatch_mode_tooltip": "控制何時使用 z.ai：關閉=不使用；全部 Claude 請求=所有 /v1/messages 等都轉發到 z.ai；加入佇列=把 z.ai 當作佇列中的 1 個槽位按輪詢分配；僅備援=僅當沒有可用 Google 帳號時才使用。",
+                "api_key": "API Key",
+                "api_key_tooltip": "用於呼叫 z.ai 上游的 API Key（本機儲存）。啟用 z.ai 或 MCP 功能前必須設定。",
+                "api_key_placeholder": "在此貼上 z.ai API Key",
+                "warning": "提示：該 Key 將儲存在本機應用程式資料目錄中。",
+                "models": {
+                    "title": "模型對應",
+                    "title_tooltip": "從 z.ai 擷取可用模型 ID，並設定如何把 Claude/Anthropic 的 model 名稱轉換為 z.ai 的模型 ID。",
+                    "refresh": "擷取模型",
+                    "refreshing": "擷取中...",
+                    "hint": "可用模型：{{count}}。可從建議中選擇，或手動輸入自訂模型 ID。",
+                    "error": "擷取模型失敗：{{error}}",
+                    "select_placeholder": "選擇模型...",
+                    "opus": "Opus 家族 → z.ai 模型",
+                    "opus_tooltip": "當請求的 model 包含「opus」（如 claude-opus-*）時預設使用的 z.ai 模型 ID。",
+                    "sonnet": "Sonnet 家族 → z.ai 模型",
+                    "sonnet_tooltip": "其他 Claude 模型（如 claude-sonnet-* 以及大多數 claude-*）預設使用的 z.ai 模型 ID。",
+                    "haiku": "Haiku 家族 → z.ai 模型",
+                    "haiku_tooltip": "當請求的 model 包含「haiku」（如 claude-haiku-*）時預設使用的 z.ai 模型 ID。",
+                    "advanced_title": "進階覆寫規則",
+                    "advanced_tooltip": "可選的精確比對覆寫規則：如果傳入的 model 字串與規則鍵完全一致，則替換為對應的 z.ai 模型 ID。",
+                    "from_label": "傳入 model",
+                    "to_label": "z.ai 模型",
+                    "from_placeholder": "例如：claude-opus-4-5-thinking",
+                    "to_placeholder": "例如：glm-4.7",
+                    "add_rule": "新增",
+                    "empty": "未設定任何覆寫規則。"
+                },
+                "modes": {
+                    "off": "關閉",
+                    "exclusive": "全部 Claude 請求走 z.ai",
+                    "pooled": "加入佇列（佔 1 個槽位）",
+                    "fallback": "僅備援"
+                },
+                "mcp": {
+                    "title": "MCP 服務（透過本機代理）",
+                    "title_tooltip": "在本機代理上公開可選的 /mcp/* 端點，供 MCP 用戶端直連。僅在服務執行、z.ai 設定完成且對應開關開啟時可用。",
+                    "enabled": "啟用 MCP 代理",
+                    "enabled_tooltip": "MCP 端點總開關；關閉時所有 /mcp/* 路由將回傳 404。",
+                    "web_search": "網頁搜尋",
+                    "web_search_tooltip": "啟用後開放 /mcp/web_search_prime/mcp，並轉發到 z.ai 的 Web Search MCP 上游。",
+                    "web_reader": "網頁閱讀",
+                    "web_reader_tooltip": "啟用後開放 /mcp/web_reader/mcp，並轉發到 z.ai 的 Web Reader MCP 上游。",
+                    "vision": "視覺",
+                    "vision_tooltip": "啟用後開放 /mcp/zai-mcp-server/mcp（本機 MCP 服務），提供視覺相關工具能力，並透過 z.ai 執行。",
+                    "local_endpoints": "本機位址（在 MCP 用戶端中設定以下 URL）：",
+                    "local_endpoints_tooltip": "把這些 URL 填到您的 MCP 用戶端即可。它們使用同一個代理連接埠，並遵循目前的驗證策略。"
+                }
+            },
+            "request_timeout": "請求逾時",
+            "request_timeout_tooltip": "代理等待上游回應的最大時間（秒），包含串流輸出。長文字/長推理可適當調大；修改後需重新啟動生效。",
+            "request_timeout_hint": "預設 120 秒，範圍 30-600 秒。修改後需重新啟動服務生效。",
+            "enable_logging": "啟用請求記錄",
+            "enable_logging_hint": "記錄歷史紀錄以便偵錯（輕微效能損耗）",
+            "upstream_proxy": {
+                "title": "全域上游代理 (Global Proxy)",
+                "desc": "開啟後，應用程式內所有外部請求（API 代理、Token 重新整理、配額查詢、更新偵測）都將透過此代理。",
+                "enable": "啟用上游代理",
+                "url": "代理位址",
+                "url_placeholder": "例如：http://127.0.0.1:7890 或 socks5://127.0.0.1:7890",
+                "tip": "支援 HTTP、HTTPS 和 SOCKS5 協定。"
+            },
+            "scheduling": {
+                "title": "帳號輪換與工作階段排程",
+                "title_tooltip": "控制工作階段如何繫結到帳號，以及觸發限速時的行為。",
+                "subtitle": "針對全協定用戶端最佳化 Prompt Caching 和限速處理（OpenAI/Gemini/Claude）。",
+                "mode": "排程模式",
+                "mode_tooltip": "快取優先：繫結帳號，限速時強制等待（最大化快取）；平衡：繫結帳號，限速時自動熱切；效能優先：不繫結，全自動輪換。",
+                "modes": {
+                    "CacheFirst": "快取優先 (Cache First)",
+                    "Balance": "平衡輪換 (Balance)",
+                    "PerformanceFirst": "效能優先 (Performance)"
+                },
+                "modes_desc": {
+                    "CacheFirst": "繫結工作階段與帳號，限速時精準等待（最大化 Prompt Cache 命中率）。",
+                    "Balance": "繫結工作階段，限速時自動熱切換至可用帳號（兼顧快取與可用性）。",
+                    "PerformanceFirst": "無工作階段繫結，純隨機輪換（適合高並行，不考慮快取）。"
+                },
+                "max_wait": "最大等待時間（秒）",
+                "max_wait_tooltip": "僅在「快取優先」模式下生效：如果帳號限速重置時間小於此值，則原地等待而非切換帳號。",
+                "clear_bindings": "清除工作階段繫結",
+                "clear_bindings_tooltip": "立即斷開所有工作階段與帳號的繫結關係，強制下一次請求重新分配帳號。"
+            }
+        },
+        "example": {
+            "title": "使用範例",
+            "curl": "cURL",
+            "python": "Python"
+        },
+        "dialog": {
+            "confirm_regenerate": "確定要產生新的 API Key 嗎？舊的 Key 將立即失效。",
+            "operate_failed": "操作失敗：{{error}}",
+            "reset_mapping_title": "重設模型對應",
+            "reset_mapping_msg": "確定要重設所有模型對應為系統預設嗎？此操作無法復原。",
+            "regenerate_key_title": "重新產生 API Key",
+            "regenerate_key_msg": "確定要重新產生 API Key 嗎？舊的 Key 將立即失效。",
+            "clear_bindings_title": "清除工作階段繫結",
+            "clear_bindings_msg": "確定要清除所有工作階段與帳號的繫結對應嗎？"
+        },
+        "model": {
+            "flash": "極速回應",
+            "flash_preview": "極速預覽",
+            "flash_lite": "輕量極速",
+            "flash_thinking": "思考能力",
+            "pro_legacy": "經典版",
+            "pro_low": "標準效能",
+            "pro_high": "最強推理",
+            "pro_image": "圖片產生 (1:1)",
+            "pro_image_16_9": "圖片產生 (16:9)",
+            "pro_image_9_16": "圖片產生 (9:16)",
+            "pro_image_4_3": "圖片產生 (4:3)",
+            "pro_image_3_4": "圖片產生 (3:4)",
+            "pro_image_1_1": "圖片產生 (1:1)",
+            "claude_sonnet": "程式碼推理",
+            "claude_sonnet_thinking": "思維鏈",
+            "claude_opus_thinking": "最強思維"
+        },
+        "mapping": {
+            "title": "Claude Code 模型對應",
+            "description": "將 Claude Code 模型對應到 Antigravity 模型，智慧路由請求以最佳化成本和速度。",
+            "default": "預設",
+            "sonnet_desc": "最強複雜任務",
+            "opus_desc": "進階層級",
+            "haiku_desc": "極速回應",
+            "maps_to": "對應到 Antigravity",
+            "apply_recommended": "套用推薦設定",
+            "restore_defaults": "還原預設設定",
+            "reset_all": "重設全部"
+        },
+        "models": {
+            "flash": "極速回應",
+            "flash_thinking": "思考能力",
+            "pro_high": "最強推理",
+            "pro_low": "低配額",
+            "sonnet": "程式碼推理",
+            "sonnet_thinking": "思維鏈",
+            "opus_thinking": "最強思維"
+        },
+        "router": {
+            "title": "模型路由中心 (Model Router)",
+            "subtitle": "按「規格家族」統一路由 OpenAI/Claude 模型，或新增最高優先順序的「精確對應」。",
+            "original_id": "原始模型 ID",
+            "route_to": "路由目標",
+            "group_title": "模型家族分組 (Series Groups)",
+            "groups": {
+                "claude_45": {
+                    "name": "Claude 4.5 系列",
+                    "desc": "Opus 4.5, Sonnet 4.5（推理）"
+                },
+                "claude_35": {
+                    "name": "Claude 3.5 系列",
+                    "desc": "Sonnet 3.5, Haiku 3.5"
+                },
+                "gpt_4": {
+                    "name": "GPT-4 / o1 系列",
+                    "desc": "GPT-4, Turbo, o1-preview"
+                },
+                "gpt_4o": {
+                    "name": "GPT-4o / 3.5 系列",
+                    "desc": "GPT-4o, Mini, 3.5 Turbo"
+                },
+                "gpt_5": {
+                    "name": "GPT-5 系列",
+                    "desc": "GPT-5.1, GPT-5.2 xhigh"
+                }
+            },
+            "expert_title": "專家精確對應 (Expert Custom Routing)",
+            "expert_subtitle": "精確比對支援從任何協定傳來的原始模型 ID。",
+            "reset_confirm": "確定要重設所有模型對應為系統預設嗎？",
+            "reset_mapping": "重設對應",
+            "add_mapping": "新增對應 (Add Mapping)",
+            "current_list": "目前對應清單 (Custom List)",
+            "no_custom_mapping": "尚無自訂精確對應",
+            "gemini3_only_warning": "⚠️ 僅支援 Gemini 3 系列",
+            "default_suffix": "（預設）"
+        },
+        "examples": {
+            "title": "使用範例"
+        },
+        "multi_protocol": {
+            "title": "多協定支援 (Multi-Protocol Support)",
+            "subtitle": "協定支援",
+            "description": "代理服務支援 OpenAI 和 Anthropic 兩種 API 格式，滿足不同工具需求",
+            "openai_label": "OpenAI 協定",
+            "anthropic_label": "Anthropic 協定",
+            "openai_tools": "Cherry Studio, NextChat",
+            "anthropic_tools": "Claude Code CLI",
+            "gemini_label": "Gemini 協定",
+            "gemini_tools": "Google AI SDK, LangChain",
+            "quick_integration": "快速整合 (Quick Integration)",
+            "click_tip": "👆 點擊左側任意模型以更新程式碼"
+        },
+        "supported_models": {
+            "title": "支援模型與整合 (Supported Models & Integration)",
+            "model_name": "模型名稱",
+            "model_id": "模型 ID",
+            "description": "描述",
+            "action": "操作"
+        }
+    },
+    "monitor": {
+        "page_title": "API 監控儀表板",
+        "page_subtitle": "即時請求記錄與分析",
+        "open_monitor": "開啟監控",
+        "logging_status": {
+            "active": "正在錄製",
+            "paused": "已暫停"
+        },
+        "stats": {
+            "total": "總計",
+            "ok": "正常",
+            "err": "錯誤"
+        },
+        "filters": {
+            "placeholder": "搜尋模型（gemini, claude）、路徑（chat, images）或狀態碼...",
+            "quick_filters": "快速篩選：",
+            "all": "全部",
+            "error": "僅錯誤",
+            "chat": "聊天",
+            "gemini": "Gemini",
+            "claude": "Claude",
+            "images": "繪圖",
+            "reset": "重設"
+        },
+        "table": {
+            "status": "狀態",
+            "method": "方法",
+            "model": "模型",
+            "path": "路徑",
+            "usage": "Token 消耗",
+            "duration": "耗時",
+            "time": "時間",
+            "empty": "尚無請求紀錄"
+        },
+        "details": {
+            "title": "請求詳情",
+            "request_payload": "請求內容 (Request)",
+            "response_payload": "回應內容 (Response)",
+            "duration": "耗時",
+            "tokens": "Token 消耗（輸入/輸出）",
+            "time": "請求時間",
+            "model": "使用模型",
+            "id": "請求 ID"
+        },
+        "dialog": {
+            "clear_title": "清除監控記錄",
+            "clear_msg": "確定要清除所有監控紀錄嗎？此操作無法復原。"
+        }
+    }
+}

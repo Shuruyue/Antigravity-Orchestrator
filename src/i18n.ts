@@ -5,6 +5,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 
 import en from './locales/en.json';
 import zh from './locales/zh.json';
+import zhTW from './locales/zh-TW.json';
 
 i18n
     // detect user language
@@ -22,9 +23,16 @@ i18n
             zh: {
                 translation: zh
             },
-            // Handling 'zh-CN' as 'zh'
+            'zh-TW': {
+                translation: zhTW
+            },
+            // Handling 'zh-CN' as 'zh' (Simplified Chinese)
             'zh-CN': {
                 translation: zh
+            },
+            // Handling 'zh-HK' and 'zh-MO' as 'zh-TW' (Traditional Chinese)
+            'zh-HK': {
+                translation: zhTW
             }
         },
         fallbackLng: 'en',

@@ -74,7 +74,15 @@ function Navbar() {
 
     const toggleLanguage = async () => {
         if (!config) return;
-        const newLang = config.language === 'zh' ? 'en' : 'zh';
+        // Cycle through: zh (Simplified) → zh-TW (Traditional) → en (English) → zh
+        let newLang: string;
+        if (config.language === 'zh') {
+            newLang = 'zh-TW';
+        } else if (config.language === 'zh-TW') {
+            newLang = 'en';
+        } else {
+            newLang = 'zh';
+        }
         await saveConfig({
             ...config,
             language: newLang,
@@ -82,6 +90,7 @@ function Navbar() {
         });
         i18n.changeLanguage(newLang);
     };
+
 
     return (
         <nav
@@ -135,16 +144,20 @@ function Navbar() {
                             )}
                         </button>
 
-                        {/* 语言切换按钮 */}
+                        {/* Language toggle button */}
                         <button
                             onClick={toggleLanguage}
                             className="w-10 h-10 rounded-full bg-gray-100 dark:bg-base-200 hover:bg-gray-200 dark:hover:bg-base-100 flex items-center justify-center transition-colors"
-                            title={config?.language === 'zh' ? 'Switch to English' : '切换到中文'}
+                            title={
+                                config?.language === 'zh' ? '切換到繁體中文' :
+                                    config?.language === 'zh-TW' ? 'Switch to English' : '切换到简体中文'
+                            }
                         >
                             <span className="text-sm font-bold text-gray-700 dark:text-gray-300">
-                                {config?.language === 'zh' ? 'EN' : '中'}
+                                {config?.language === 'zh' ? '繁' : config?.language === 'zh-TW' ? 'EN' : '简'}
                             </span>
                         </button>
+
                     </div>
                 </div>
             </div>
