@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { invoke } from '@tauri-apps/api/core';
@@ -28,6 +28,8 @@ import { AppConfig, ProxyConfig, StickySessionConfig } from '../types/config';
 import HelpTooltip from '../components/common/HelpTooltip';
 import ModalDialog from '../components/common/ModalDialog';
 import { showToast } from '../components/common/ToastContainer';
+
+const CONFIG_SAVE_DEBOUNCE_MS = 400;
 
 interface ProxyStatus {
     running: boolean;
@@ -220,6 +222,9 @@ export default function ApiProxy() {
     const [, setZaiModelsError] = useState<string | null>(null);
     const [zaiNewMappingFrom, setZaiNewMappingFrom] = useState('');
     const [zaiNewMappingTo, setZaiNewMappingTo] = useState('');
+    const [customMappingKey, setCustomMappingKey] = useState('');
+    const [customMappingValue, setCustomMappingValue] = useState('');
+    const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     // Modal states
     const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
@@ -243,6 +248,15 @@ export default function ApiProxy() {
         return () => clearInterval(interval);
     }, []);
 
+    useEffect(() => {
+        return () => {
+            if (saveTimerRef.current) {
+                clearTimeout(saveTimerRef.current);
+                saveTimerRef.current = null;
+            }
+        };
+    }, []);
+
     const loadConfig = async () => {
         try {
             const config = await invoke<AppConfig>('load_config');
@@ -262,6 +276,11 @@ export default function ApiProxy() {
     };
 
     const saveConfig = async (newConfig: AppConfig) => {
+        if (saveTimerRef.current) {
+            clearTimeout(saveTimerRef.current);
+            saveTimerRef.current = null;
+        }
+
         try {
             await invoke('save_config', { config: newConfig });
             setAppConfig(newConfig);
@@ -269,6 +288,19 @@ export default function ApiProxy() {
             console.error('Failed to save config:', error);
             showToast(`${t('common.error')}: ${error}`, 'error');
         }
+    };
+
+    const saveConfigDebounced = (newConfig: AppConfig) => {
+        setAppConfig(newConfig);
+
+        if (saveTimerRef.current) {
+            clearTimeout(saveTimerRef.current);
+        }
+
+        saveTimerRef.current = setTimeout(() => {
+            saveTimerRef.current = null;
+            void saveConfig(newConfig);
+        }, CONFIG_SAVE_DEBOUNCE_MS);
     };
 
     // 专门处理模型映射的热更新 (全量)
@@ -356,7 +388,10 @@ export default function ApiProxy() {
         }
     };
 
-    const updateProxyConfig = (updates: Partial<ProxyConfig>) => {
+    const updateProxyConfig = (
+        updates: Partial<ProxyConfig>,
+        options?: { debounce?: boolean }
+    ) => {
         if (!appConfig) return;
         const newConfig = {
             ...appConfig,
@@ -365,7 +400,11 @@ export default function ApiProxy() {
                 ...updates
             }
         };
-        saveConfig(newConfig);
+        if (options?.debounce) {
+            saveConfigDebounced(newConfig);
+        } else {
+            void saveConfig(newConfig);
+        }
     };
 
     const updateSchedulingConfig = (updates: Partial<StickySessionConfig>) => {
@@ -380,7 +419,7 @@ export default function ApiProxy() {
                 scheduling: newScheduling
             }
         };
-        saveConfig(newAppConfig);
+        void saveConfig(newAppConfig);
     };
 
     const handleClearSessionBindings = () => {
@@ -429,7 +468,7 @@ export default function ApiProxy() {
                 }
             }
         };
-        saveConfig(newConfig);
+        void saveConfig(newConfig);
     };
 
     const upsertZaiModelMapping = (from: string, to: string) => {
@@ -447,7 +486,7 @@ export default function ApiProxy() {
                 }
             }
         };
-        saveConfig(newConfig);
+        void saveConfig(newConfig);
     };
 
     const removeZaiModelMapping = (from: string) => {
@@ -466,7 +505,7 @@ export default function ApiProxy() {
                 }
             }
         };
-        saveConfig(newConfig);
+        void saveConfig(newConfig);
     };
 
     const updateZaiGeneralConfig = (updates: Partial<NonNullable<ProxyConfig['zai']>>) => {
@@ -481,7 +520,7 @@ export default function ApiProxy() {
                 }
             }
         };
-        saveConfig(newConfig);
+        void saveConfig(newConfig);
     };
 
     const handleToggle = async () => {
@@ -523,6 +562,16 @@ export default function ApiProxy() {
             setCopied(label);
             setTimeout(() => setCopied(null), 2000);
         });
+    };
+
+    const handleAddCustomMapping = () => {
+        const key = customMappingKey.trim();
+        const value = customMappingValue.trim();
+        if (!key || !value) return;
+
+        void handleMappingUpdate('custom', key, value);
+        setCustomMappingKey('');
+        setCustomMappingValue('');
     };
 
 
@@ -690,7 +739,11 @@ print(response.text)`;
                                     <input
                                         type="number"
                                         value={appConfig.proxy.port}
-                                        onChange={(e) => updateProxyConfig({ port: parseInt(e.target.value) })}
+                                        onChange={(e) => {
+                                            const port = parseInt(e.target.value, 10);
+                                            if (Number.isNaN(port)) return;
+                                            updateProxyConfig({ port }, { debounce: true });
+                                        }}
                                         min={8000}
                                         max={65535}
                                         disabled={status.running}
@@ -715,9 +768,10 @@ print(response.text)`;
                                         type="number"
                                         value={appConfig.proxy.request_timeout || 120}
                                         onChange={(e) => {
-                                            const value = parseInt(e.target.value);
+                                            const value = parseInt(e.target.value, 10);
+                                            if (Number.isNaN(value)) return;
                                             const timeout = Math.max(30, Math.min(600, value));
-                                            updateProxyConfig({ request_timeout: timeout });
+                                            updateProxyConfig({ request_timeout: timeout }, { debounce: true });
                                         }}
                                         min={30}
                                         max={600}
@@ -1451,29 +1505,35 @@ print(response.text)`;
                                             </div>
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                                 <input
-                                                    id="custom-key"
                                                     type="text"
                                                     placeholder="Original (e.g. gpt-4)"
+                                                    value={customMappingKey}
+                                                    onChange={(e) => setCustomMappingKey(e.target.value)}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter') {
+                                                            e.preventDefault();
+                                                            handleAddCustomMapping();
+                                                        }
+                                                    }}
                                                     className="input input-xs input-bordered w-full font-mono text-[11px] bg-white dark:bg-base-100 border border-gray-200 dark:border-gray-700 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-gray-400"
                                                 />
                                                 <input
-                                                    id="custom-val"
                                                     type="text"
                                                     placeholder="Target (e.g. gemini-2.5-pro)"
+                                                    value={customMappingValue}
+                                                    onChange={(e) => setCustomMappingValue(e.target.value)}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter') {
+                                                            e.preventDefault();
+                                                            handleAddCustomMapping();
+                                                        }
+                                                    }}
                                                     className="input input-xs input-bordered w-full font-mono text-[11px] bg-white dark:bg-base-100 border border-gray-200 dark:border-gray-700 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-gray-400"
                                                 />
                                             </div>
                                             <button
                                                 className="btn btn-xs w-full gap-2 shadow-md hover:shadow-lg transition-all bg-blue-600 hover:bg-blue-700 text-white border-none"
-                                                onClick={() => {
-                                                    const k = (document.getElementById('custom-key') as HTMLInputElement).value;
-                                                    const v = (document.getElementById('custom-val') as HTMLInputElement).value;
-                                                    if (k && v) {
-                                                        handleMappingUpdate('custom', k, v);
-                                                        (document.getElementById('custom-key') as HTMLInputElement).value = '';
-                                                        (document.getElementById('custom-val') as HTMLInputElement).value = '';
-                                                    }
-                                                }}
+                                                onClick={handleAddCustomMapping}
                                             >
                                                 <Plus size={14} />
                                                 {t('common.add')}

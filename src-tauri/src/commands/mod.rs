@@ -725,7 +725,9 @@ pub async fn toggle_proxy_status(
     }
 
     // 3. 保存到磁盘
-    std::fs::write(&account_path, serde_json::to_string_pretty(&account_json).unwrap())
+    let serialized = serde_json::to_string_pretty(&account_json)
+        .map_err(|e| format!("序列化账号文件失败: {}", e))?;
+    std::fs::write(&account_path, serialized)
         .map_err(|e| format!("写入账号文件失败: {}", e))?;
 
     modules::logger::log_info(&format!(

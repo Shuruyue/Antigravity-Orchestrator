@@ -214,34 +214,34 @@ impl TokenManager {
             let mut target_token: Option<ProxyToken> = None;
             
             // 模式 A: 粘性会话处理 (CacheFirst 或 Balance 且有 session_id)
-            if !rotate && session_id.is_some() && scheduling.mode != SchedulingMode::PerformanceFirst {
-                let sid = session_id.unwrap();
-                
-                // 1. 检查会话是否已绑定账号
-                if let Some(bound_id) = self.session_accounts.get(sid).map(|v| v.clone()) {
-                    // 2. 检查绑定的账号是否限流 (使用精准的剩余时间接口)
-                    let reset_sec = self.rate_limit_tracker.get_remaining_wait(&bound_id);
-                    if reset_sec > 0 {
-                        if scheduling.mode == SchedulingMode::CacheFirst && reset_sec <= scheduling.max_wait_seconds {
-                            // 缓存优先模式：限流时间短，执行精准精准避让等待
-                            tracing::warn!("Cache-first: Session {} bound to {} is limited. Executing precise wait for {}s to preserve cache...", sid, bound_id, reset_sec);
-                            tokio::time::sleep(std::time::Duration::from_secs(reset_sec)).await;
-                            
-                            // 等待后若账号可用，优先复用
+            if !rotate && scheduling.mode != SchedulingMode::PerformanceFirst {
+                if let Some(sid) = session_id {
+                    // 1. 检查会话是否已绑定账号
+                    if let Some(bound_id) = self.session_accounts.get(sid).map(|v| v.clone()) {
+                        // 2. 检查绑定的账号是否限流 (使用精准的剩余时间接口)
+                        let reset_sec = self.rate_limit_tracker.get_remaining_wait(&bound_id);
+                        if reset_sec > 0 {
+                            if scheduling.mode == SchedulingMode::CacheFirst && reset_sec <= scheduling.max_wait_seconds {
+                                // 缓存优先模式：限流时间短，执行精准精准避让等待
+                                tracing::warn!("Cache-first: Session {} bound to {} is limited. Executing precise wait for {}s to preserve cache...", sid, bound_id, reset_sec);
+                                tokio::time::sleep(std::time::Duration::from_secs(reset_sec)).await;
+
+                                // 等待后若账号可用，优先复用
+                                if let Some(found) = tokens_snapshot.iter().find(|t| t.account_id == bound_id) {
+                                    tracing::debug!("Sticky Session: Successfully recovered and reusing bound account {} for session {}", found.email, sid);
+                                    target_token = Some(found.clone());
+                                }
+                            } else {
+                                // 平衡模式或等待时间过长：断开绑定，准备换号
+                                tracing::warn!("Avoidance/WaitTimeout: Session {} switching from {} (remaining wait: {}s > limit: {}s).", sid, bound_id, reset_sec, scheduling.max_wait_seconds);
+                                self.session_accounts.remove(sid);
+                            }
+                        } else if !attempted.contains(&bound_id) {
+                            // 3. 账号可用且未被标记为尝试失败，优先复用
                             if let Some(found) = tokens_snapshot.iter().find(|t| t.account_id == bound_id) {
-                                tracing::debug!("Sticky Session: Successfully recovered and reusing bound account {} for session {}", found.email, sid);
+                                tracing::debug!("Sticky Session: Successfully reusing bound account {} for session {}", found.email, sid);
                                 target_token = Some(found.clone());
                             }
-                        } else {
-                            // 平衡模式或等待时间过长：断开绑定，准备换号
-                            tracing::warn!("Avoidance/WaitTimeout: Session {} switching from {} (remaining wait: {}s > limit: {}s).", sid, bound_id, reset_sec, scheduling.max_wait_seconds);
-                            self.session_accounts.remove(sid);
-                        }
-                    } else if !attempted.contains(&bound_id) {
-                        // 3. 账号可用且未被标记为尝试失败，优先复用
-                        if let Some(found) = tokens_snapshot.iter().find(|t| t.account_id == bound_id) {
-                            tracing::debug!("Sticky Session: Successfully reusing bound account {} for session {}", found.email, sid);
-                            target_token = Some(found.clone());
                         }
                     }
                 }
@@ -436,7 +436,9 @@ impl TokenManager {
         content["disabled_at"] = serde_json::Value::Number(now.into());
         content["disabled_reason"] = serde_json::Value::String(truncate_reason(reason, 800));
 
-        std::fs::write(&path, serde_json::to_string_pretty(&content).unwrap())
+        let serialized = serde_json::to_string_pretty(&content)
+            .map_err(|e| format!("序列化 JSON 失败: {}", e))?;
+        std::fs::write(&path, serialized)
             .map_err(|e| format!("写入文件失败: {}", e))?;
 
         tracing::warn!("Account disabled: {} ({:?})", account_id, path);
@@ -456,7 +458,9 @@ impl TokenManager {
         
         content["token"]["project_id"] = serde_json::Value::String(project_id.to_string());
         
-        std::fs::write(path, serde_json::to_string_pretty(&content).unwrap())
+        let serialized = serde_json::to_string_pretty(&content)
+            .map_err(|e| format!("序列化 JSON 失败: {}", e))?;
+        std::fs::write(path, serialized)
             .map_err(|e| format!("写入文件失败: {}", e))?;
         
         tracing::debug!("已保存 project_id 到账号 {}", account_id);
@@ -480,7 +484,9 @@ impl TokenManager {
         content["token"]["expires_in"] = serde_json::Value::Number(token_response.expires_in.into());
         content["token"]["expiry_timestamp"] = serde_json::Value::Number((now + token_response.expires_in).into());
         
-        std::fs::write(path, serde_json::to_string_pretty(&content).unwrap())
+        let serialized = serde_json::to_string_pretty(&content)
+            .map_err(|e| format!("序列化 JSON 失败: {}", e))?;
+        std::fs::write(path, serialized)
             .map_err(|e| format!("写入文件失败: {}", e))?;
         
         tracing::debug!("已保存刷新后的 token 到账号 {}", account_id);

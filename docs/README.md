@@ -12,3 +12,6 @@ This folder contains developer-focused documentation (architecture, implementati
 - [`docs/zai/provider.md`](zai/provider.md) — Anthropic-compatible passthrough provider details and dispatch modes.
 - [`docs/zai/vision-mcp.md`](zai/vision-mcp.md) — built-in Vision MCP server protocol and tool implementations.
 - [`docs/zai/notes.md`](zai/notes.md) — research notes, constraints, and future follow-ups (budget/usage, additional endpoints).
+
+## Maintenance
+- [`docs/final-maintenance.md`](final-maintenance.md) — maintenance-only policy, release checklist, rollback flow, and dependency update policy.

@@ -38,7 +38,13 @@ impl UpstreamClient {
             }
         }
 
-        let http_client = builder.build().expect("Failed to create HTTP client");
+        let http_client = match builder.build() {
+            Ok(client) => client,
+            Err(err) => {
+                tracing::error!("Failed to create configured HTTP client, fallback to default: {}", err);
+                Client::new()
+            }
+        };
 
         Self { http_client }
     }

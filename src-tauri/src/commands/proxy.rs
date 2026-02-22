@@ -65,7 +65,13 @@ pub async fn start_proxy_service(
         }
     }
     
-    let monitor = state.monitor.read().await.as_ref().unwrap().clone();
+    let monitor = state
+        .monitor
+        .read()
+        .await
+        .as_ref()
+        .cloned()
+        .ok_or_else(|| "监控器初始化失败".to_string())?;
     
     // 2. 初始化 Token 管理器
     let app_data_dir = crate::modules::account::get_data_dir()?;
@@ -429,4 +435,3 @@ pub async fn clear_proxy_session_bindings(
         Err("服务未运行".to_string())
     }
 }
-
