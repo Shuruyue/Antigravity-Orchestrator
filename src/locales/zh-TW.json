@@ -25,16 +25,28 @@
         "pagination_info": "顯示第 {{start}} 至 {{end}} 筆，共 {{total}} 筆",
         "per_page": "每頁",
         "items": "筆",
-        "accounts": "個帳號"
+        "accounts": "個帳號",
+        "back": "返回",
+        "enabled": "啟用",
+        "disabled": "停用",
+        "required": "必填",
+        "switch": "切換",
+        "copy": "複製",
+        "not_available": "N/A"
     },
     "nav": {
         "dashboard": "儀表板",
         "accounts": "帳號管理",
         "proxy": "API 代理",
-        "settings": "設定"
+        "settings": "設定",
+        "switch_to_dark": "切換到深色模式",
+        "switch_to_light": "切換到淺色模式",
+        "switch_to_simplified": "切換到簡體中文",
+        "switch_to_traditional": "切換到繁體中文",
+        "switch_to_english": "切換到英文"
     },
     "dashboard": {
-        "hello": "您好，使用者 👋",
+        "hello": "你好，{{name}}",
         "refresh_quota": "重新整理配額",
         "refreshing": "重新整理中...",
         "total_accounts": "帳號總數",
@@ -64,7 +76,8 @@
             "export_no_accounts": "沒有可匯出的帳號",
             "export_success": "匯出成功！檔案已儲存至：{{path}}",
             "export_error": "匯出失敗"
-        }
+        },
+        "default_user": "用戶"
     },
     "accounts": {
         "search_placeholder": "搜尋電子郵件...",
@@ -141,6 +154,9 @@
             "btn_confirm": "確認新增",
             "status": {
                 "error_token": "請填寫 Refresh Token"
+            },
+            "errors": {
+                "environment": "環境錯誤：{{error}}"
             }
         },
         "table": {
@@ -172,6 +188,14 @@
             "disable_proxy_msg": "確定要停用此帳號的代理功能嗎？帳號仍可在應用程式中使用。",
             "enable_proxy_title": "啟用代理",
             "enable_proxy_msg": "確定要重新啟用此帳號的代理功能嗎？"
+        },
+        "batch_disable": "批次停用 ({{count}})",
+        "batch_enable": "批次啟用 ({{count}})",
+        "batch_proxy_enabled": "已啟用 {{count}} 個帳號的反代功能",
+        "batch_proxy_disabled": "已停用 {{count}} 個帳號的反代功能",
+        "proxy_disable_reason": {
+            "manual": "使用者手動停用",
+            "batch": "批次停用"
         }
     },
     "settings": {
@@ -193,7 +217,11 @@
             "auto_launch": "開機自動啟動",
             "auto_launch_enabled": "啟用",
             "auto_launch_disabled": "停用",
-            "auto_launch_desc": "系統啟動時自動執行 Antigravity Tools"
+            "auto_launch_desc": "系統啟動時自動執行 Antigravity Tools",
+            "language_zh": "簡體中文",
+            "language_zh_tw": "繁體中文",
+            "language_en": "English",
+            "auto_launch_status": "開機自動啟動：{{status}}"
         },
         "account": {
             "title": "帳號設定",
@@ -403,6 +431,9 @@
                 "max_wait_tooltip": "僅在「快取優先」模式下生效：如果帳號限速重置時間小於此值，則原地等待而非切換帳號。",
                 "clear_bindings": "清除工作階段繫結",
                 "clear_bindings_tooltip": "立即斷開所有工作階段與帳號的繫結關係，強制下一次請求重新分配帳號。"
+            },
+            "external_providers": {
+                "title": "外部供應商"
             }
         },
         "example": {
@@ -522,7 +553,8 @@
             "gemini_label": "Gemini 協定",
             "gemini_tools": "Google AI SDK, LangChain",
             "quick_integration": "快速整合 (Quick Integration)",
-            "click_tip": "👆 點擊左側任意模型以更新程式碼"
+            "click_tip": "👆 點擊左側任意模型以更新程式碼",
+            "base_url": "基礎位址"
         },
         "supported_models": {
             "title": "支援模型與整合 (Supported Models & Integration)",
@@ -574,7 +606,8 @@
             "tokens": "Token 消耗（輸入/輸出）",
             "time": "請求時間",
             "model": "使用模型",
-            "id": "請求 ID"
+            "id": "請求 ID",
+            "empty": "空"
         },
         "dialog": {
             "clear_title": "清除監控記錄",

@@ -240,9 +240,9 @@ function Settings() {
                                     value={formData.language}
                                     onChange={(e) => setFormData({ ...formData, language: e.target.value })}
                                 >
-                                    <option value="zh">简体中文</option>
-                                    <option value="zh-TW">繁體中文</option>
-                                    <option value="en">English</option>
+                                    <option value="zh">{t('settings.general.language_zh')}</option>
+                                    <option value="zh-TW">{t('settings.general.language_zh_tw')}</option>
+                                    <option value="en">{t('settings.general.language_en')}</option>
                                 </select>
                             </div>
 
@@ -271,7 +271,12 @@ function Settings() {
                                         try {
                                             await invoke('toggle_auto_launch', { enable: enabled });
                                             setFormData({ ...formData, auto_launch: enabled });
-                                            showToast(enabled ? '已启用开机自动启动' : '已禁用开机自动启动', 'success');
+                                            showToast(
+                                                t('settings.general.auto_launch_status', {
+                                                    status: t(enabled ? 'common.enabled' : 'common.disabled')
+                                                }),
+                                                'success'
+                                            );
                                         } catch (error) {
                                             showToast(`${t('common.error')}: ${error}`, 'error');
                                         }

@@ -231,7 +231,7 @@ impl NonStreamingProcessor {
         // 1. 处理搜索词
         if let Some(queries) = &grounding.web_search_queries {
             if !queries.is_empty() {
-                grounding_text.push_str("\n\n---\n**🔍 已为您搜索：** ");
+                grounding_text.push_str("\n\n---\n**已为您搜索：** ");
                 grounding_text.push_str(&queries.join(", "));
             }
         }
@@ -248,7 +248,7 @@ impl NonStreamingProcessor {
             }
 
             if !links.is_empty() {
-                grounding_text.push_str("\n\n**🌐 来源引文：**\n");
+                grounding_text.push_str("\n\n**来源引文：**\n");
                 grounding_text.push_str(&links.join("\n"));
             }
         }

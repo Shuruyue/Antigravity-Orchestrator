@@ -248,7 +248,7 @@ export default function ApiProxy() {
             const config = await invoke<AppConfig>('load_config');
             setAppConfig(config);
         } catch (error) {
-            console.error('加载配置失败:', error);
+            console.error('Failed to load config:', error);
         }
     };
 
@@ -257,7 +257,7 @@ export default function ApiProxy() {
             const s = await invoke<ProxyStatus>('get_proxy_status');
             setStatus(s);
         } catch (error) {
-            console.error('获取状态失败:', error);
+            console.error('Failed to load status:', error);
         }
     };
 
@@ -266,7 +266,7 @@ export default function ApiProxy() {
             await invoke('save_config', { config: newConfig });
             setAppConfig(newConfig);
         } catch (error) {
-            console.error('保存配置失败:', error);
+            console.error('Failed to save config:', error);
             showToast(`${t('common.error')}: ${error}`, 'error');
         }
     };
@@ -513,7 +513,7 @@ export default function ApiProxy() {
             updateProxyConfig({ api_key: newKey });
             showToast(t('common.success'), 'success');
         } catch (error: any) {
-            console.error('生成 API Key 失败:', error);
+            console.error('Failed to generate API key:', error);
             showToast(t('proxy.dialog.operate_failed', { error: error.toString() }), 'error');
         }
     };
@@ -528,7 +528,7 @@ export default function ApiProxy() {
 
     const getPythonExample = (modelId: string) => {
         const port = status.running ? status.port : (appConfig?.proxy.port || 8045);
-        // 推荐使用 127.0.0.1 以避免部分环境 IPv6 解析延迟问题
+        // Prefer 127.0.0.1 to avoid IPv6 DNS resolution delays in some environments.
         const baseUrl = `http://127.0.0.1:${port}/v1`;
         const apiKey = appConfig?.proxy.api_key || 'YOUR_API_KEY';
 
@@ -537,12 +537,12 @@ export default function ApiProxy() {
             return `from anthropic import Anthropic
  
  client = Anthropic(
-     # 推荐使用 127.0.0.1
+     # Prefer 127.0.0.1 for local routing
      base_url="${`http://127.0.0.1:${port}`}",
      api_key="${apiKey}"
  )
  
- # 注意: Antigravity 支持使用 Anthropic SDK 调用任意模型
+ # Antigravity supports routing any model through Anthropic SDK
  response = client.messages.create(
      model="${modelId}",
      max_tokens=1024,
@@ -555,10 +555,10 @@ export default function ApiProxy() {
         // 2. Gemini Protocol (Native)
         if (selectedProtocol === 'gemini') {
             const rawBaseUrl = `http://127.0.0.1:${port}`;
-            return `# 需要安装: pip install google-generativeai
+            return `# Install: pip install google-generativeai
 import google.generativeai as genai
 
-# 使用 Antigravity 代理地址 (推荐 127.0.0.1)
+# Use Antigravity proxy endpoint (127.0.0.1 recommended)
 genai.configure(
     api_key="${apiKey}",
     transport='rest',
@@ -581,12 +581,12 @@ print(response.text)`;
  
  response = client.chat.completions.create(
      model="${modelId}",
-     # 方式 1: 使用 size 参数 (推荐)
-     # 支持: "1024x1024" (1:1), "1280x720" (16:9), "720x1280" (9:16), "1216x896" (4:3)
+     # Method 1: use the size parameter (recommended)
+     # Supported: "1024x1024" (1:1), "1280x720" (16:9), "720x1280" (9:16), "1216x896" (4:3)
      extra_body={ "size": "1024x1024" },
      
-     # 方式 2: 使用模型后缀
-     # 例如: gemini-3-pro-image-16-9, gemini-3-pro-image-4-3
+     # Method 2: use model suffix
+     # Example: gemini-3-pro-image-16-9, gemini-3-pro-image-4-3
      # model="gemini-3-pro-image-16-9",
      messages=[{
          "role": "user",
@@ -643,7 +643,7 @@ print(response.text)`;
                                     <div className={`w-2 h-2 rounded-full ${status.running ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`} />
                                     <span className={`text-xs font-medium ${status.running ? 'text-green-600' : 'text-gray-500'}`}>
                                         {status.running
-                                            ? `${t('proxy.status.running')} (${status.active_accounts} ${t('common.accounts') || 'Accounts'})`
+                                            ? `${t('proxy.status.running')} (${status.active_accounts} ${t('common.accounts')})`
                                             : t('proxy.status.stopped')}
                                     </span>
                                 </div>
@@ -909,7 +909,7 @@ print(response.text)`;
                             <div className="px-1 flex items-center gap-2 text-gray-400">
                                 <Layers size={14} />
                                 <span className="text-[10px] font-bold uppercase tracking-widest">
-                                    {t('proxy.config.external_providers.title', { defaultValue: 'External Providers' })}
+                                    {t('proxy.config.external_providers.title')}
                                 </span>
                             </div>
 
@@ -996,7 +996,7 @@ print(response.text)`;
                                                                 value=""
                                                                 onChange={(e) => e.target.value && updateZaiDefaultModels({ [family]: e.target.value })}
                                                             >
-                                                                <option value="">Select</option>
+                                                                <option value="">{t('proxy.config.zai.models.select_placeholder')}</option>
                                                                 {zaiModelOptions.map(m => <option key={m} value={m}>{m}</option>)}
                                                             </select>
                                                         )}
@@ -1047,13 +1047,13 @@ print(response.text)`;
                                                 <div className="flex items-center gap-2 pt-2 border-t border-gray-200/50">
                                                     <input
                                                         className="input input-xs input-bordered flex-1 font-mono"
-                                                        placeholder="From (e.g. claude-3-opus)"
+                                                        placeholder={t('proxy.config.zai.models.from_placeholder')}
                                                         value={zaiNewMappingFrom}
                                                         onChange={e => setZaiNewMappingFrom(e.target.value)}
                                                     />
                                                     <input
                                                         className="input input-xs input-bordered flex-1 font-mono"
-                                                        placeholder="To (e.g. glm-4)"
+                                                        placeholder={t('proxy.config.zai.models.to_placeholder')}
                                                         value={zaiNewMappingTo}
                                                         onChange={e => setZaiNewMappingTo(e.target.value)}
                                                     />
@@ -1182,11 +1182,7 @@ print(response.text)`;
                                                                 {t(`proxy.config.scheduling.modes.${mode}`)}
                                                             </div>
                                                             <div className="text-[10px] text-gray-500 line-clamp-2">
-                                                                {t(`proxy.config.scheduling.modes_desc.${mode}`, {
-                                                                    defaultValue: mode === 'CacheFirst' ? 'Binds session to account, waits precisely if limited (Maximizes Prompt Cache hits).' :
-                                                                        mode === 'Balance' ? 'Binds session, auto-switches to available account if limited (Balanced cache & availability).' :
-                                                                            'No session binding, pure round-robin rotation (Best for high concurrency).'
-                                                                })}
+                                                                {t(`proxy.config.scheduling.modes_desc.${mode}`)}
                                                             </div>
                                                         </div>
                                                     </label>
@@ -1427,7 +1423,7 @@ print(response.text)`;
                                     </div>
 
 
-                                    {/* 💡 Haiku optimization tip */}
+                                    {/* Haiku optimization tip */}
                                     <div className="mb-4 p-3 bg-blue-50/50 dark:bg-blue-900/10 rounded-lg border border-blue-100 dark:border-blue-800/30">
                                         <div className="flex items-center justify-between gap-3">
                                             <div className="flex items-center gap-2 flex-1">
@@ -1562,7 +1558,7 @@ print(response.text)`;
                                         <div className="flex items-center justify-between mb-2">
                                             <span className="text-xs font-bold text-blue-600">{t('proxy.multi_protocol.openai_label')}</span>
                                             <button onClick={(e) => { e.stopPropagation(); copyToClipboard(`${status.base_url}/v1`, 'openai'); }} className="btn btn-ghost btn-xs">
-                                                {copied === 'openai' ? <CheckCircle size={14} /> : <div className="flex items-center gap-1 text-[10px]"><Copy size={12} /> Base</div>}
+                                                {copied === 'openai' ? <CheckCircle size={14} /> : <div className="flex items-center gap-1 text-[10px]"><Copy size={12} />{t('proxy.multi_protocol.base_url')}</div>}
                                             </button>
                                         </div>
                                         <div className="space-y-1">
@@ -1664,7 +1660,7 @@ print(response.text)`;
                                                                     copyToClipboard(m.id, `model-${m.id}`);
                                                                 }}
                                                             >
-                                                                {copied === `model-${m.id}` ? <CheckCircle size={14} /> : <div className="flex items-center gap-1 text-[10px]"><Copy size={12} /> Copy</div>}
+                                                                {copied === `model-${m.id}` ? <CheckCircle size={14} /> : <div className="flex items-center gap-1 text-[10px]"><Copy size={12} /> {t('common.copy')}</div>}
                                                             </button>
                                                         </td>
                                                     </tr>
@@ -1709,8 +1705,8 @@ print(response.text)`;
                 {/* 各种对话框 */}
                 <ModalDialog
                     isOpen={isResetConfirmOpen}
-                    title={t('proxy.dialog.reset_mapping_title') || '重置映射'}
-                    message={t('proxy.dialog.reset_mapping_msg') || '确定要重置所有模型映射为系统默认吗？'}
+                    title={t('proxy.dialog.reset_mapping_title')}
+                    message={t('proxy.dialog.reset_mapping_msg')}
                     type="confirm"
                     isDestructive={true}
                     onConfirm={executeResetMapping}
@@ -1719,8 +1715,8 @@ print(response.text)`;
 
                 <ModalDialog
                     isOpen={isRegenerateKeyConfirmOpen}
-                    title={t('proxy.dialog.regenerate_key_title') || t('proxy.dialog.confirm_regenerate')}
-                    message={t('proxy.dialog.regenerate_key_msg') || t('proxy.dialog.confirm_regenerate')}
+                    title={t('proxy.dialog.regenerate_key_title')}
+                    message={t('proxy.dialog.regenerate_key_msg')}
                     type="confirm"
                     isDestructive={true}
                     onConfirm={executeGenerateApiKey}
@@ -1729,8 +1725,8 @@ print(response.text)`;
 
                 <ModalDialog
                     isOpen={isClearBindingsConfirmOpen}
-                    title={t('proxy.dialog.clear_bindings_title') || '清除会话绑定'}
-                    message={t('proxy.dialog.clear_bindings_msg') || '确定要清除所有会话与账号的绑定映射吗？'}
+                    title={t('proxy.dialog.clear_bindings_title')}
+                    message={t('proxy.dialog.clear_bindings_msg')}
                     type="confirm"
                     isDestructive={true}
                     onConfirm={executeClearSessionBindings}

@@ -33,9 +33,19 @@ i18n
             // Handling 'zh-HK' and 'zh-MO' as 'zh-TW' (Traditional Chinese)
             'zh-HK': {
                 translation: zhTW
+            },
+            'zh-MO': {
+                translation: zhTW
             }
         },
-        fallbackLng: 'en',
+        fallbackLng: {
+            'zh-TW': ['zh-TW', 'zh', 'en'],
+            'zh-HK': ['zh-TW', 'zh', 'en'],
+            'zh-MO': ['zh-TW', 'zh', 'en'],
+            zh: ['zh', 'en'],
+            default: ['en']
+        },
+        supportedLngs: ['en', 'zh', 'zh-TW', 'zh-CN', 'zh-HK', 'zh-MO'],
         debug: false, // Set to true for development
 
         interpolation: {

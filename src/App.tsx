@@ -1,13 +1,13 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { Suspense, lazy, useEffect } from 'react';
 
-import Layout from './components/layout/Layout';
-import Dashboard from './pages/Dashboard';
-import Accounts from './pages/Accounts';
-import Settings from './pages/Settings';
-import ApiProxy from './pages/ApiProxy';
-import Monitor from './pages/Monitor';
+const Layout = lazy(() => import('./components/layout/Layout'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Accounts = lazy(() => import('./pages/Accounts'));
+const Settings = lazy(() => import('./pages/Settings'));
+const ApiProxy = lazy(() => import('./pages/ApiProxy'));
+const Monitor = lazy(() => import('./pages/Monitor'));
 import ThemeManager from './components/common/ThemeManager';
-import { useEffect } from 'react';
 import { useConfigStore } from './stores/useConfigStore';
 import { useAccountStore } from './stores/useAccountStore';
 import { useTranslation } from 'react-i18next';
@@ -43,13 +43,9 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  const { config, loadConfig } = useConfigStore();
+  const { config } = useConfigStore();
   const { fetchCurrentAccount, fetchAccounts } = useAccountStore();
   const { i18n } = useTranslation();
-
-  useEffect(() => {
-    loadConfig();
-  }, [loadConfig]);
 
   // Sync language from config
   useEffect(() => {
@@ -60,30 +56,34 @@ function App() {
 
   // Listen for tray events
   useEffect(() => {
+    const refreshFromTray = () => {
+      console.log('[App] Tray event received, refreshing account state...');
+      void Promise.all([
+        fetchCurrentAccount(),
+        fetchAccounts(),
+      ]);
+    };
+
     const unlistenPromises: Promise<() => void>[] = [];
 
     // 监听托盘切换账号事件
     unlistenPromises.push(
-      listen('tray://account-switched', () => {
-        console.log('[App] Tray account switched, refreshing...');
-        fetchCurrentAccount();
-        fetchAccounts();
-      })
+      listen('tray://account-switched', refreshFromTray)
     );
 
     // 监听托盘刷新事件
     unlistenPromises.push(
-      listen('tray://refresh-current', () => {
-        console.log('[App] Tray refresh triggered, refreshing...');
-        fetchCurrentAccount();
-        fetchAccounts();
-      })
+      listen('tray://refresh-current', refreshFromTray)
     );
 
     // Cleanup
     return () => {
-      Promise.all(unlistenPromises).then(unlisteners => {
-        unlisteners.forEach(unlisten => unlisten());
+      void Promise.allSettled(unlistenPromises).then(results => {
+        results.forEach(result => {
+          if (result.status === 'fulfilled') {
+            result.value();
+          }
+        });
       });
     };
   }, [fetchCurrentAccount, fetchAccounts]);
@@ -91,7 +91,9 @@ function App() {
   return (
     <>
       <ThemeManager />
-      <RouterProvider router={router} />
+      <Suspense fallback={<div className="h-full w-full flex items-center justify-center text-sm text-gray-500">Loading...</div>}>
+        <RouterProvider router={router} />
+      </Suspense>
     </>
   );
 }

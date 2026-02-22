@@ -115,7 +115,7 @@ pub async fn switch_account(app: tauri::AppHandle, account_id: String) -> Result
 /// 获取当前账号
 #[tauri::command]
 pub async fn get_current_account() -> Result<Option<Account>, String> {
-    // println!("🚀 Backend Command: get_current_account called"); // Commented out to reduce noise for frequent calls, relies on frontend log for frequency
+    // println!("Backend Command: get_current_account called"); // Commented out to reduce noise for frequent calls, relies on frontend log for frequency
     // Actually user WANTS to see it.
     modules::logger::log_info("Backend Command: get_current_account called");
 
@@ -218,7 +218,7 @@ pub async fn refresh_all_quotas() -> Result<RefreshStats, String> {
                     modules::logger::log_error(&msg);
                 } else {
                     success += 1;
-                    modules::logger::log_info("    ✅ Success");
+                    modules::logger::log_info("    Success");
                 }
             }
             Err(e) => {

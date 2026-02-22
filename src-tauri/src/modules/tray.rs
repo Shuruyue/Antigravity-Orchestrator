@@ -177,7 +177,7 @@ pub fn update_tray_menus<R: Runtime>(app: &tauri::AppHandle<R>) {
                  
                  if let Some(q) = account.quota {
                      if q.is_forbidden {
-                         menu_lines.push(format!("🚫 {}", texts.forbidden));
+                         menu_lines.push(texts.forbidden.clone());
                      } else {
                          // 提取 3 个指定模型
                          let mut gemini_high = 0;

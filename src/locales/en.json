@@ -25,16 +25,28 @@
         "pagination_info": "Showing {{start}} to {{end}} of {{total}} entries",
         "per_page": "Per page",
         "items": "items",
-        "accounts": "accounts"
+        "accounts": "accounts",
+        "back": "Back",
+        "enabled": "Enabled",
+        "disabled": "Disabled",
+        "required": "Required",
+        "switch": "Switch",
+        "copy": "Copy",
+        "not_available": "N/A"
     },
     "nav": {
         "dashboard": "Dashboard",
         "accounts": "Accounts",
         "proxy": "API Proxy",
-        "settings": "Settings"
+        "settings": "Settings",
+        "switch_to_dark": "Switch to dark mode",
+        "switch_to_light": "Switch to light mode",
+        "switch_to_simplified": "Switch to Simplified Chinese",
+        "switch_to_traditional": "Switch to Traditional Chinese",
+        "switch_to_english": "Switch to English"
     },
     "dashboard": {
-        "hello": "Hello, User 👋",
+        "hello": "Hello, {{name}}",
         "refresh_quota": "Refresh Quota",
         "refreshing": "Refreshing...",
         "total_accounts": "Total Accounts",
@@ -64,7 +76,8 @@
             "export_no_accounts": "No accounts to export",
             "export_success": "Export successful! File saved to: {{path}}",
             "export_error": "Export failed"
-        }
+        },
+        "default_user": "User"
     },
     "accounts": {
         "search_placeholder": "Search email...",
@@ -141,6 +154,9 @@
             "btn_confirm": "Confirm",
             "status": {
                 "error_token": "Please enter Refresh Token"
+            },
+            "errors": {
+                "environment": "Environment error: {{error}}"
             }
         },
         "table": {
@@ -172,6 +188,14 @@
             "disable_proxy_msg": "Are you sure you want to disable proxy for this account? The account can still be used within the app.",
             "enable_proxy_title": "Enable Proxy",
             "enable_proxy_msg": "Are you sure you want to re-enable proxy for this account?"
+        },
+        "batch_disable": "Disable ({{count}})",
+        "batch_enable": "Enable ({{count}})",
+        "batch_proxy_enabled": "Enabled proxy for {{count}} accounts",
+        "batch_proxy_disabled": "Disabled proxy for {{count}} accounts",
+        "proxy_disable_reason": {
+            "manual": "Manually disabled by user",
+            "batch": "Batch disabled by user"
         }
     },
     "settings": {
@@ -193,7 +217,11 @@
             "auto_launch": "Launch at Startup",
             "auto_launch_enabled": "Enabled",
             "auto_launch_disabled": "Disabled",
-            "auto_launch_desc": "Automatically launch Antigravity Tools when system starts"
+            "auto_launch_desc": "Automatically launch Antigravity Tools when system starts",
+            "language_zh": "Simplified Chinese",
+            "language_zh_tw": "Traditional Chinese",
+            "language_en": "English",
+            "auto_launch_status": "Launch at startup: {{status}}"
         },
         "account": {
             "title": "Account Settings",
@@ -403,6 +431,9 @@
                 "max_wait_tooltip": "Only used in 'Cache First' mode: wait instead of switching if the rate limit reset time is below this value.",
                 "clear_bindings": "Clear Session Bindings",
                 "clear_bindings_tooltip": "Hard reset all session-account bindings, forcing accounts to be re-assigned on next request."
+            },
+            "external_providers": {
+                "title": "External Providers"
             }
         },
         "example": {
@@ -519,7 +550,8 @@
             "gemini_label": "Gemini Protocol",
             "gemini_tools": "Google AI SDK, LangChain",
             "quick_integration": "Quick Integration",
-            "click_tip": "👆 Click any model on the left to update this code."
+            "click_tip": "👆 Click any model on the left to update this code.",
+            "base_url": "Base URL"
         },
         "supported_models": {
             "title": "Supported Models & Integration",
@@ -527,6 +559,9 @@
             "model_id": "Model ID",
             "description": "Description",
             "action": "Action"
+        },
+        "examples": {
+            "title": "Examples"
         }
     },
     "monitor": {
@@ -571,7 +606,8 @@
             "tokens": "Tokens (I/O)",
             "time": "Time",
             "model": "Model",
-            "id": "Request ID"
+            "id": "Request ID",
+            "empty": "Empty"
         },
         "dialog": {
             "clear_title": "Clear Proxy Logs",

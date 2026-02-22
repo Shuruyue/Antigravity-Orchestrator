@@ -1,11 +1,11 @@
-# Antigravity Tools 🚀
+# Antigravity Tools
 > 專業的 AI 帳號管理與協議反向代理系統 (v3.3.15)
 <div align="center">
   <img src="public/icon.png" alt="Antigravity Logo" width="120" height="120" style="border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
 
   <h3>您的個人高效能 AI 調度閘道</h3>
   <p>不僅僅是帳號管理，更是打破 API 呼叫壁壘的終極解決方案。</p>
-  
+
   <p>
     <a href="https://github.com/lbjlaq/Antigravity-Manager">
       <img src="https://img.shields.io/badge/Version-3.3.15-blue?style=flat-square" alt="Version">
@@ -17,15 +17,15 @@
   </p>
 
   <p>
-    <a href="#-核心功能">核心功能</a> • 
-    <a href="#-介面導覽">介面導覽</a> • 
-    <a href="#-技術架構">技術架構</a> • 
-    <a href="#-安裝指南">安裝指南</a> • 
+    <a href="#-核心功能">核心功能</a> •
+    <a href="#-介面導覽">介面導覽</a> •
+    <a href="#-技術架構">技術架構</a> •
+    <a href="#-安裝指南">安裝指南</a> •
     <a href="#-快速接入">快速接入</a>
   </p>
 
   <p>
-    <a href="./README.md">简体中文</a> | 
+    <a href="./README.md">简体中文</a> |
     <strong>繁體中文</strong> |
     <a href="./README_EN.md">English</a>
   </p>
@@ -37,41 +37,41 @@
 
 透過本應用程式，您可以將常見的 Web 端 Session (Google/Anthropic) 轉化為標準化的 API 介面，徹底消除不同廠商間的協議鴻溝。
 
-## 💖 贊助商 (Sponsors)
+## 贊助商 (Sponsors)
 
 | <img src="docs/images/packycode_logo.png" width="200" alt="PackyCode Logo"> | 感謝 **PackyCode** 對本專案的贊助！PackyCode 是一家可靠高效的 API 中轉服務商，提供 Claude Code、Codex、Gemini 等多種服務的中轉。PackyCode 為本專案的使用者提供了特別優惠：使用[此連結](https://www.packyapi.com/register?aff=Ctrler)註冊，並在儲值時輸入 **"Ctrler"** 優惠碼即可享受 **九折優惠**。 |
 | :--- | :--- |
 
-## 🌟 核心功能解析
+## 核心功能解析
 
-### 1. 🎛️ 智慧帳號儀表板
+### 1. 智慧帳號儀表板
 *   **全域即時監控**: 一眼洞察所有帳號的健康狀況，包括 Gemini Pro、Gemini Flash、Claude 以及 Gemini 繪圖的 **平均剩餘配額**。
 *   **最佳帳號推薦**: 系統會根據當前所有帳號的配額冗餘度，即時演算法篩選並推薦「最佳帳號」，支援 **一鍵切換**。
 *   **活躍帳號快照**: 直觀顯示當前活躍帳號的具體配額百分比及最後同步時間。
 
-### 2. 🔐 強大的帳號管家
+### 2. 強大的帳號管家
 *   **OAuth 2.0 授權（自動/手動）**: 新增帳號時會提前產生可複製的授權連結，支援在任意瀏覽器完成授權；回呼成功後應用程式會自動完成並儲存（必要時可點擊「我已授權，繼續」手動收尾）。
 *   **多維度匯入**: 支援單條 Token 錄入、JSON 批次匯入（如來自其他工具的備份），以及從 V1 舊版本資料庫自動熱遷移。
 *   **閘道級檢視**: 支援「清單」與「網格」雙檢視切換。提供 403 封鎖偵測，自動標註並略過權限異常的帳號。
 
-### 3. 🔌 協議轉換與中繼
+### 3. 協議轉換與中繼
 *   **全協議適配**:
     *   **OpenAI 格式**: 提供 `/v1/chat/completions` 端點，相容 99% 的現有 AI 應用程式。
     *   **Anthropic 格式**: 提供原生 `/v1/messages` 介面，支援 **Claude Code CLI** 的全功能（如思維鏈、系統提示詞）。
     *   **Gemini 格式**: 支援 Google 官方 SDK 直接呼叫。
 *   **智慧狀態自癒**: 當請求遇到 `429 (Too Many Requests)` 或 `401 (Expire)` 時，後端會毫秒級觸發 **自動重試與靜默輪換**，確保業務不中斷。
 
-### 4. 🔀 模型路由中心
+### 4. 模型路由中心
 *   **系列化對應**: 您可以將複雜的原始模型 ID 歸類到「規格家族」（如將所有 GPT-4 請求統一路由到 `gemini-3-pro-high`）。
 *   **專家級重新導向**: 支援自訂正規表示式級模型對應，精準控制每一個請求的落地模型。
 *   **智慧分級路由 [新]**: 系統根據帳號類型（Ultra/Pro/Free）和配額重置頻率自動優先順序排序，優先消耗高速重置帳號，確保高頻呼叫下的服務穩定性。
 *   **後台任務靜默降級 [新]**: 自動識別 Claude CLI 等工具產生的背景請求（如標題產生），智慧重新導向至 Flash 模型，保護高級模型配額不被浪費。
 
-### 5. 🎨 多模態與 Imagen 3 支援
+### 5. 多模態與 Imagen 3 支援
 *   **進階畫質控制**: 支援透過 OpenAI `size` (如 `1024x1024`, `16:9`) 參數自動對應到 Imagen 3 的相應規格。
 *   **超強 Body 支援**: 後端支援高達 **100MB** 的 Payload，處理 4K 高清圖辨識綽綽有餘。
 
-## 📸 介面導覽
+## 介面導覽
 
 ![儀表板 - 全域配額監控與一鍵切換](docs/images/dashboard-light.png)
 ![帳號清單 - 高密度配額展示與 403 智慧標註](docs/images/accounts-light.png)
@@ -79,14 +79,14 @@
 ![API 反向代理 - 服務控制](docs/images/v3/proxy-settings.png)
 ![系統設定 - 一般設定](docs/images/settings-dark.png)
 
-### 💡 使用案例
+### 使用案例
 
 ![Claude Code 聯網搜尋 - 結構化來源與引文顯示](docs/images/usage/claude-code-search.png)
 ![Cherry Studio 深度整合 - 原生回顯搜尋引文與來源連結](docs/images/usage/cherry-studio-citations.png)
 ![Imagen 3 進階繪圖 - 完美還原 Prompt 意境與細節](docs/images/usage/image-gen-nebula.png)
 ![Kilo Code 接入 - 多帳號極速輪換與模型穿透](docs/images/usage/kilo-code-integration.png)
 
-## 🏗️ 技術架構
+## 技術架構
 
 ```mermaid
 graph TD
@@ -100,7 +100,7 @@ graph TD
     ResponseMapper --> Client
 ```
 
-## 📦 安裝指南
+## 安裝指南
 
 ### 選項 A: macOS 終端機安裝（推薦）
 如果您已安裝 [Homebrew](https://brew.sh/)，可以透過以下命令快速安裝：
@@ -122,7 +122,7 @@ brew install --cask --no-quarantine antigravity-tools
 *   **Windows**: `.msi` 或 可攜版 `.zip`
 *   **Linux**: `.deb` 或 `AppImage`
 
-### 🛠️ 常見問題排查
+### 常見問題排查
 
 #### macOS 提示「應用程式已損壞，無法開啟」？
 由於 macOS 的安全機制，非 App Store 下載的應用程式可能會觸發此提示。您可以按照以下步驟快速修復：
@@ -138,12 +138,12 @@ brew install --cask --no-quarantine antigravity-tools
     brew install --cask --no-quarantine antigravity-tools
     ```
 
-## 🔌 快速接入範例
+## 快速接入範例
 
-### 🔐 OAuth 授權流程（新增帳號）
+### OAuth 授權流程（新增帳號）
 1. 開啟「Accounts / 帳號」→「新增帳號」→「OAuth」。
 2. 彈窗會在點擊按鈕前預產生授權連結；點擊連結即可複製到系統剪貼簿，然後用您希望的瀏覽器開啟並完成授權。
-3. 授權完成後瀏覽器會開啟本地回呼頁並顯示「✅ 授權成功!」。
+3. 授權完成後瀏覽器會開啟本地回呼頁並顯示「授權成功!」。
 4. 應用程式會自動繼續完成授權並儲存帳號；如未自動完成，可點擊「我已授權，繼續」手動完成。
 
 > 提示：授權連結包含一次性回呼埠，請始終使用彈窗裡產生的最新連結；如果授權時應用程式未執行或彈窗已關閉，瀏覽器可能會提示 `localhost refused connection`。
@@ -160,7 +160,7 @@ claude
 ### 如何接入 Kilo Code？
 1.  **協議選擇**: 建議優先使用 **Gemini 協議**。
 2.  **Base URL**: 填寫 `http://127.0.0.1:8045`。
-3.  **注意**: 
+3.  **注意**:
     - **OpenAI 協議限制**: Kilo Code 在使用 OpenAI 模式時，其請求路徑會疊加產生 `/v1/chat/completions/responses` 這種非標準路徑，導致 Antigravity 回傳 404。因此請務必填入 Base URL 後選擇 Gemini 模式。
     - **模型對應**: Kilo Code 中的模型名稱可能與 Antigravity 預設設定不一致，如遇到無法連線，請在「模型對應」頁面設定自訂對應，並查看**日誌檔案**進行除錯。
 
@@ -180,7 +180,7 @@ response = client.chat.completions.create(
 print(response.choices[0].message.content)
 ```
 
-## 📝 開發者與社群
+## 開發者與社群
 
 *   **版本演進 (Changelog)**:
     *   **v3.3.15 (2026-01-04)**:
@@ -224,7 +224,7 @@ print(response.choices[0].message.content)
             - **修復空 Thinking 內容錯誤**: 當用戶端傳送空的 Thinking 區塊時，自動降級為普通文字區塊，避免 `thinking: Field required` 錯誤。
             - **修復智慧降級後的驗證錯誤**: 當 Thinking 被智慧降級停用時（如歷史訊息不相容），自動將所有歷史訊息中的 Thinking 區塊轉換為普通文字，解決「thinking is disabled but message contains thinking」錯誤。
             - **修復模型切換簽名錯誤**: 增加目標模型 Thinking 支援偵測。從 Claude thinking 模型切換到普通 Gemini 模型（如 `gemini-2.5-flash`）時，自動停用 Thinking 並降級歷史訊息，避免「Corrupted thought signature」錯誤。只有帶 `-thinking` 後綴的模型（如 `gemini-2.5-flash-thinking`）或 Claude 模型支援 Thinking。
-            - **影響範圍**: 這些修復確保了在各種模型切換場景下的穩定性，特別是 Claude ↔ Gemini 之間的自由切換。
+            - **影響範圍**: 這些修復確保了在各種模型切換場景下的穩定性，特別是 Claude 與 Gemini 之間的自由切換。
         - **帳號輪詢限流機制最佳化 (核心修復 Issue #278)**:
             - **修復限流時間解析失敗**: 徹底解決了 Google API 回傳的 `quotaResetDelay` 無法正確解析的問題。
                 - **修正 JSON 解析路徑**: 將 `quotaResetDelay` 的提取路徑從 `details[0].quotaResetDelay` 修正為 `details[0].metadata.quotaResetDelay`，符合 Google API 的實際 JSON 結構。
@@ -252,7 +252,7 @@ print(response.choices[0].message.content)
                 - **伺服器過載 (529/503)**: 指數退避(1s/2s/4s/8s)，顯著提升恢復成功率 167%。
                 - **限流錯誤 (429)**: 優先使用伺服端 Retry-After，否則線性退避(1s/2s/3s)。
                 - **帳號保護**: 伺服端錯誤(529/503)不再輪換帳號，避免污染健康帳號池。
-                - **統一日誌**: 所有退避操作使用 ⏱️ 標識，便於監控和除錯。
+                - **統一日誌**: 所有退避操作使用時間標識，便於監控和除錯。
         - **Scoop 安裝相容性支援 (核心致謝 @Small-Ku PR #252)**:
             - **啟動參數設定**: 新增 Antigravity 啟動參數設定功能，支援在設定頁面自訂啟動參數，完美相容 Scoop 等套件管理器的可攜式安裝。
             - **智慧資料庫路徑偵測**: 最佳化資料庫路徑偵測邏輯，按優先順序依次檢查：
@@ -272,7 +272,7 @@ print(response.choices[0].message.content)
             - **基於 dnd-kit**: 使用現代化的 `@dnd-kit` 函式庫實作，支援鍵盤導覽和無障礙存取。
     *   更早版本的更新日誌請參閱 [Releases](https://github.com/lbjlaq/Antigravity-Manager/releases)。
 
-## 👥 核心貢獻者
+## 核心貢獻者
 
 <a href="https://github.com/lbjlaq"><img src="https://github.com/lbjlaq.png" width="50px" style="border-radius: 50%;" alt="lbjlaq"/></a>
 <a href="https://github.com/XinXin622"><img src="https://github.com/XinXin622.png" width="50px" style="border-radius: 50%;" alt="XinXin622"/></a>
@@ -292,6 +292,6 @@ print(response.choices[0].message.content)
 ---
 
 <div align="center">
-  <p>如果您覺得這個工具有所幫助，歡迎在 GitHub 上點一個 ⭐️</p>
-  <p>Copyright © 2025 Antigravity Team.</p>
+  <p>如果您覺得這個工具有所幫助，歡迎在 GitHub 上點一個 </p>
+  <p>Copyright  2025 Antigravity Team.</p>
 </div>

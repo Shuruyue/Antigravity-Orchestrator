@@ -166,7 +166,7 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                                             {formatTimeRemaining(geminiProModel.reset_time)}
                                         </span>
                                     ) : (
-                                        <span className="text-gray-300 dark:text-gray-600 italic scale-90">N/A</span>
+                                        <span className="text-gray-300 dark:text-gray-600 italic scale-90">{t('common.not_available')}</span>
                                     )}
                                 </div>
                                 <span className={cn("w-[36px] text-right font-bold transition-colors",
@@ -195,7 +195,7 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                                             {formatTimeRemaining(geminiFlashModel.reset_time)}
                                         </span>
                                     ) : (
-                                        <span className="text-gray-300 dark:text-gray-600 italic scale-90">N/A</span>
+                                        <span className="text-gray-300 dark:text-gray-600 italic scale-90">{t('common.not_available')}</span>
                                     )}
                                 </div>
                                 <span className={cn("w-[36px] text-right font-bold transition-colors",
@@ -224,7 +224,7 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                                             {formatTimeRemaining(geminiImageModel.reset_time)}
                                         </span>
                                     ) : (
-                                        <span className="text-gray-300 dark:text-gray-600 italic scale-90">N/A</span>
+                                        <span className="text-gray-300 dark:text-gray-600 italic scale-90">{t('common.not_available')}</span>
                                     )}
                                 </div>
                                 <span className={cn("w-[36px] text-right font-bold transition-colors",
@@ -253,7 +253,7 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                                             {formatTimeRemaining(claudeModel.reset_time)}
                                         </span>
                                     ) : (
-                                        <span className="text-gray-300 dark:text-gray-600 italic scale-90">N/A</span>
+                                        <span className="text-gray-300 dark:text-gray-600 italic scale-90">{t('common.not_available')}</span>
                                     )}
                                 </div>
                                 <span className={cn("w-[36px] text-right font-bold transition-colors",

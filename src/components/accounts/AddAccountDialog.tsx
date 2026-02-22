@@ -93,7 +93,7 @@ function AddAccountDialog({ onAdd }: AddAccountDialogProps) {
                     if (errorMsg.includes('Refresh Token') || errorMsg.includes('refresh_token')) {
                         setMessage(errorMsg);
                     } else if (errorMsg.includes('Tauri') || errorMsg.includes('环境')) {
-                        setMessage(`环境错误: ${errorMsg}`);
+                        setMessage(t('accounts.add.errors.environment', { error: errorMsg }));
                     } else {
                         setMessage(`${t('accounts.add.tabs.oauth')} ${t('common.error')}: ${errorMsg}`);
                     }
@@ -174,7 +174,7 @@ function AddAccountDialog({ onAdd }: AddAccountDialogProps) {
                 setMessage(errorMsg);
             } else if (errorMsg.includes('Tauri') || errorMsg.includes('环境')) {
                 // 环境错误
-                setMessage(`环境错误: ${errorMsg}`);
+                setMessage(t('accounts.add.errors.environment', { error: errorMsg }));
             } else {
                 // 其他错误
                 setMessage(`${actionName} ${t('common.error')}: ${errorMsg}`);
@@ -312,7 +312,7 @@ function AddAccountDialog({ onAdd }: AddAccountDialogProps) {
             });
 
             if (selected && typeof selected === 'string') {
-                handleAction(t('accounts.add.import.btn_custom_db') || 'Import Custom DB', () => importFromCustomDb(selected));
+                handleAction(t('accounts.add.import.btn_custom_db'), () => importFromCustomDb(selected));
             }
         } catch (err) {
             console.error('Failed to open dialog:', err);
@@ -504,7 +504,7 @@ function AddAccountDialog({ onAdd }: AddAccountDialogProps) {
                                             disabled={status === 'loading' || status === 'success'}
                                         >
                                             <Database className="w-4 h-4" />
-                                            {t('accounts.add.import.btn_custom_db') || 'Custom DB (state.vscdb)'}
+                                            {t('accounts.add.import.btn_custom_db')}
                                         </button>
                                     </div>
 

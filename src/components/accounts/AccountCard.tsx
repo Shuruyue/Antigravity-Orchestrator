@@ -152,7 +152,7 @@ function AccountCard({ account, selected, onSelect, isCurrent, isRefreshing, isS
                                                 {formatTimeRemaining(geminiProModel.reset_time)}
                                             </span>
                                         ) : (
-                                            <span className="text-gray-300 dark:text-gray-600 italic scale-90">N/A</span>
+                                            <span className="text-gray-300 dark:text-gray-600 italic scale-90">{t('common.not_available')}</span>
                                         )}
                                     </div>
                                     <span className={cn("w-[30px] text-right font-bold transition-colors shrink-0",
@@ -181,7 +181,7 @@ function AccountCard({ account, selected, onSelect, isCurrent, isRefreshing, isS
                                                 {formatTimeRemaining(geminiFlashModel.reset_time)}
                                             </span>
                                         ) : (
-                                            <span className="text-gray-300 dark:text-gray-600 italic scale-90">N/A</span>
+                                            <span className="text-gray-300 dark:text-gray-600 italic scale-90">{t('common.not_available')}</span>
                                         )}
                                     </div>
                                     <span className={cn("w-[30px] text-right font-bold transition-colors shrink-0",
@@ -210,7 +210,7 @@ function AccountCard({ account, selected, onSelect, isCurrent, isRefreshing, isS
                                                 {formatTimeRemaining(geminiImageModel.reset_time)}
                                             </span>
                                         ) : (
-                                            <span className="text-gray-300 dark:text-gray-600 italic scale-90">N/A</span>
+                                            <span className="text-gray-300 dark:text-gray-600 italic scale-90">{t('common.not_available')}</span>
                                         )}
                                     </div>
                                     <span className={cn("w-[30px] text-right font-bold transition-colors shrink-0",
@@ -239,7 +239,7 @@ function AccountCard({ account, selected, onSelect, isCurrent, isRefreshing, isS
                                                 {formatTimeRemaining(claudeModel.reset_time)}
                                             </span>
                                         ) : (
-                                            <span className="text-gray-300 dark:text-gray-600 italic scale-90">N/A</span>
+                                            <span className="text-gray-300 dark:text-gray-600 italic scale-90">{t('common.not_available')}</span>
                                         )}
                                     </div>
                                     <span className={cn("w-[30px] text-right font-bold transition-colors shrink-0",

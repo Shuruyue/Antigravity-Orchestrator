@@ -91,6 +91,13 @@ function Navbar() {
         i18n.changeLanguage(newLang);
     };
 
+    const languageShortLabel = config?.language === 'zh' ? '繁' : config?.language === 'zh-TW' ? 'EN' : '简';
+    const languageToggleTitle =
+        config?.language === 'zh'
+            ? t('nav.switch_to_traditional')
+            : config?.language === 'zh-TW'
+                ? t('nav.switch_to_english')
+                : t('nav.switch_to_simplified');
 
     return (
         <nav
@@ -135,7 +142,7 @@ function Navbar() {
                         <button
                             onClick={toggleTheme}
                             className="w-10 h-10 rounded-full bg-gray-100 dark:bg-base-200 hover:bg-gray-200 dark:hover:bg-base-100 flex items-center justify-center transition-colors"
-                            title={config?.theme === 'light' ? '切换到深色模式' : '切换到浅色模式'}
+                            title={config?.theme === 'light' ? t('nav.switch_to_dark') : t('nav.switch_to_light')}
                         >
                             {config?.theme === 'light' ? (
                                 <Moon className="w-5 h-5 text-gray-700 dark:text-gray-300" />
@@ -148,13 +155,10 @@ function Navbar() {
                         <button
                             onClick={toggleLanguage}
                             className="w-10 h-10 rounded-full bg-gray-100 dark:bg-base-200 hover:bg-gray-200 dark:hover:bg-base-100 flex items-center justify-center transition-colors"
-                            title={
-                                config?.language === 'zh' ? '切換到繁體中文' :
-                                    config?.language === 'zh-TW' ? 'Switch to English' : '切换到简体中文'
-                            }
+                            title={languageToggleTitle}
                         >
                             <span className="text-sm font-bold text-gray-700 dark:text-gray-300">
-                                {config?.language === 'zh' ? '繁' : config?.language === 'zh-TW' ? 'EN' : '简'}
+                                {languageShortLabel}
                             </span>
                         </button>
 

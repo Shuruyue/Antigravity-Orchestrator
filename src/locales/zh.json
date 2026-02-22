@@ -25,16 +25,28 @@
         "pagination_info": "显示第 {{start}} 到 {{end}} 条，共 {{total}} 条",
         "per_page": "每页",
         "items": "条",
-        "accounts": "个账号"
+        "accounts": "个账号",
+        "back": "返回",
+        "enabled": "启用",
+        "disabled": "禁用",
+        "required": "必填",
+        "switch": "切换",
+        "copy": "复制",
+        "not_available": "N/A"
     },
     "nav": {
         "dashboard": "仪表盘",
         "accounts": "账号管理",
         "proxy": "API 反代",
-        "settings": "设置"
+        "settings": "设置",
+        "switch_to_dark": "切换到深色模式",
+        "switch_to_light": "切换到浅色模式",
+        "switch_to_simplified": "切换到简体中文",
+        "switch_to_traditional": "切换到繁體中文",
+        "switch_to_english": "切换到英文"
     },
     "dashboard": {
-        "hello": "你好, 用户 👋",
+        "hello": "你好，{{name}}",
         "refresh_quota": "刷新配额",
         "refreshing": "刷新中...",
         "total_accounts": "总账号数",
@@ -64,7 +76,8 @@
             "export_no_accounts": "没有可导出的账号",
             "export_success": "导出成功! 文件已保存至: {{path}}",
             "export_error": "导出失败"
-        }
+        },
+        "default_user": "用户"
     },
     "accounts": {
         "search_placeholder": "搜索邮箱...",
@@ -141,6 +154,9 @@
             "btn_confirm": "确认添加",
             "status": {
                 "error_token": "请填写 Refresh Token"
+            },
+            "errors": {
+                "environment": "环境错误：{{error}}"
             }
         },
         "table": {
@@ -172,6 +188,14 @@
             "disable_proxy_msg": "确定要禁用此账号的反代功能吗？账号仍可在应用中使用。",
             "enable_proxy_title": "启用反代",
             "enable_proxy_msg": "确定要重新启用此账号的反代功能吗？"
+        },
+        "batch_disable": "批量禁用 ({{count}})",
+        "batch_enable": "批量启用 ({{count}})",
+        "batch_proxy_enabled": "已启用 {{count}} 个账号的反代功能",
+        "batch_proxy_disabled": "已禁用 {{count}} 个账号的反代功能",
+        "proxy_disable_reason": {
+            "manual": "用户手动禁用",
+            "batch": "批量禁用"
         }
     },
     "settings": {
@@ -193,7 +217,11 @@
             "auto_launch": "开机自动启动",
             "auto_launch_enabled": "启用",
             "auto_launch_disabled": "禁用",
-            "auto_launch_desc": "系统启动时自动运行 Antigravity Tools"
+            "auto_launch_desc": "系统启动时自动运行 Antigravity Tools",
+            "language_zh": "简体中文",
+            "language_zh_tw": "繁體中文",
+            "language_en": "English",
+            "auto_launch_status": "开机自动启动：{{status}}"
         },
         "account": {
             "title": "账号设置",
@@ -403,6 +431,9 @@
                 "max_wait_tooltip": "仅在“缓存优先”模式下生效：如果账号限流重置时间小于此值，则原地等待而非切换账号。",
                 "clear_bindings": "清除会话绑定",
                 "clear_bindings_tooltip": "立即断开所有会话与账号的绑定关系，强制下一次请求重新分配账号。"
+            },
+            "external_providers": {
+                "title": "外部供应商"
             }
         },
         "example": {
@@ -522,7 +553,8 @@
             "gemini_label": "Gemini 协议",
             "gemini_tools": "Google AI SDK, LangChain",
             "quick_integration": "快速集成 (Quick Integration)",
-            "click_tip": "👆 点击左侧任意模型以更新代码"
+            "click_tip": "👆 点击左侧任意模型以更新代码",
+            "base_url": "基础地址"
         },
         "supported_models": {
             "title": "支持模型与集成 (Supported Models & Integration)",
@@ -574,7 +606,8 @@
             "tokens": "Token 消耗 (输入/输出)",
             "time": "请求时间",
             "model": "使用模型",
-            "id": "请求 ID"
+            "id": "请求 ID",
+            "empty": "空"
         },
         "dialog": {
             "clear_title": "清除监控日志",

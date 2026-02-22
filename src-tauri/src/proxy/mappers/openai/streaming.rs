@@ -125,7 +125,7 @@ pub fn create_openai_sse_stream(
                                         if let Some(queries) = grounding.get("webSearchQueries").and_then(|q| q.as_array()) {
                                             let query_list: Vec<&str> = queries.iter().filter_map(|v| v.as_str()).collect();
                                             if !query_list.is_empty() {
-                                                grounding_text.push_str("\n\n---\n**🔍 已为您搜索：** ");
+                                                grounding_text.push_str("\n\n---\n**已为您搜索：** ");
                                                 grounding_text.push_str(&query_list.join(", "));
                                             }
                                         }
@@ -140,7 +140,7 @@ pub fn create_openai_sse_stream(
                                                 }
                                             }
                                             if !links.is_empty() {
-                                                grounding_text.push_str("\n\n**🌐 来源引文：**\n");
+                                                grounding_text.push_str("\n\n**来源引文：**\n");
                                                 grounding_text.push_str(&links.join("\n"));
                                             }
                                         }

@@ -129,7 +129,7 @@ export const ProxyMonitor: React.FC<ProxyMonitorProps> = ({ className }) => {
     };
 
     const formatBody = (body?: string) => {
-        if (!body) return <span className="text-gray-400 italic">Empty</span>;
+        if (!body) return <span className="text-gray-400 italic">{t('monitor.details.empty')}</span>;
         try {
             const obj = JSON.parse(body);
             return <pre className="text-[10px] font-mono whitespace-pre-wrap text-gray-700 dark:text-gray-300">{JSON.stringify(obj, null, 2)}</pre>;
@@ -165,9 +165,9 @@ export const ProxyMonitor: React.FC<ProxyMonitorProps> = ({ className }) => {
                     </div>
 
                     <div className="hidden lg:flex gap-4 text-[10px] font-bold uppercase">
-                        <span className="text-blue-500">{formatCompactNumber(stats.total_requests)} REQS</span>
-                        <span className="text-green-500">{formatCompactNumber(stats.success_count)} OK</span>
-                        <span className="text-red-500">{formatCompactNumber(stats.error_count)} ERR</span>
+                        <span className="text-blue-500">{formatCompactNumber(stats.total_requests)} {t('monitor.stats.total')}</span>
+                        <span className="text-green-500">{formatCompactNumber(stats.success_count)} {t('monitor.stats.ok')}</span>
+                        <span className="text-red-500">{formatCompactNumber(stats.error_count)} {t('monitor.stats.err')}</span>
                     </div>
 
                     <button onClick={clearLogs} className="btn btn-sm btn-ghost text-gray-400">

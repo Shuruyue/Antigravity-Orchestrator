@@ -623,7 +623,7 @@ print(response.choices[0].message.content)`;
                                 </div>
                                 <div>
                                     <h3 className="text-lg font-bold text-gray-900 dark:text-base-content">
-                                        🔗 {t('proxy.multi_protocol.title')}
+                                        {t('proxy.multi_protocol.title')}
                                     </h3>
                                     <p className="text-xs text-gray-500 dark:text-gray-400">
                                         {t('proxy.multi_protocol.subtitle')}
@@ -662,7 +662,7 @@ print(response.choices[0].message.content)`;
                                         </code>
                                     </div>
                                     <p className="text-xs text-gray-600 dark:text-gray-400">
-                                        💡 {t('proxy.multi_protocol.openai_tools')}
+                                        {t('proxy.multi_protocol.openai_tools')}
                                     </p>
                                 </div>
 
@@ -692,7 +692,7 @@ print(response.choices[0].message.content)`;
                                         </code>
                                     </div>
                                     <p className="text-xs text-gray-600 dark:text-gray-400">
-                                        💡 {t('proxy.multi_protocol.anthropic_tools')}
+                                        {t('proxy.multi_protocol.anthropic_tools')}
                                     </p>
                                 </div>
                             </div>

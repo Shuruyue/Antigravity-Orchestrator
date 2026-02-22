@@ -77,7 +77,7 @@ function Dashboard() {
             await switchAccount(accountId);
             showToast(t('dashboard.toast.switch_success'), 'success');
         } catch (error) {
-            console.error('切换账号失败:', error);
+            console.error('[Dashboard] Switch account failed:', error);
             showToast(`${t('dashboard.toast.switch_error')}: ${error}`, 'error');
         } finally {
             setTimeout(() => {
@@ -88,7 +88,6 @@ function Dashboard() {
 
     const handleAddAccount = async (email: string, refreshToken: string) => {
         await addAccount(email, refreshToken);
-        await fetchAccounts(); // 刷新列表
     };
 
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -147,11 +146,12 @@ function Dashboard() {
         exportAccountsToJson(accounts);
     };
 
+    const currentName = currentAccount?.name || currentAccount?.email.split('@')[0] || t('dashboard.default_user');
+
     return (
         <div className="h-full w-full overflow-y-auto">
             <div
                 className="p-5 space-y-4 max-w-7xl mx-auto"
-                onMouseMove={() => console.log('Mouse moving over Dashboard')}
                 style={{ position: 'relative', zIndex: 1 }}
             >
                 {/* 问候语和操作按钮 */}
@@ -160,10 +160,7 @@ function Dashboard() {
                 >
                     <div>
                         <h1 className="text-2xl font-bold text-gray-900 dark:text-base-content">
-                            {currentAccount
-                                ? t('dashboard.hello').replace('用户', currentAccount.name || currentAccount.email.split('@')[0])
-                                : t('dashboard.hello')
-                            }
+                            {t('dashboard.hello', { name: currentName })}
                         </h1>
                     </div>
                     <div className="flex gap-2">

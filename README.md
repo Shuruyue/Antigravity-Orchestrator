@@ -1,11 +1,11 @@
-# Antigravity Tools 🚀
+# Antigravity Tools
 > 专业的 AI 账号管理与协议反代系统 (v3.3.15)
 <div align="center">
   <img src="public/icon.png" alt="Antigravity Logo" width="120" height="120" style="border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
 
   <h3>您的个人高性能 AI 调度网关</h3>
   <p>不仅仅是账号管理，更是打破 API 调用壁垒的终极解决方案。</p>
-  
+
   <p>
     <a href="https://github.com/lbjlaq/Antigravity-Manager">
       <img src="https://img.shields.io/badge/Version-3.3.15-blue?style=flat-square" alt="Version">
@@ -17,15 +17,15 @@
   </p>
 
   <p>
-    <a href="#-核心功能">核心功能</a> • 
-    <a href="#-界面导览">界面导览</a> • 
-    <a href="#-技术架构">技术架构</a> • 
-    <a href="#-安装指南">安装指南</a> • 
+    <a href="#-核心功能">核心功能</a> •
+    <a href="#-界面导览">界面导览</a> •
+    <a href="#-技术架构">技术架构</a> •
+    <a href="#-安装指南">安装指南</a> •
     <a href="#-快速接入">快速接入</a>
   </p>
 
   <p>
-    <strong>简体中文</strong> | 
+    <strong>简体中文</strong> |
     <a href="./README_TW.md">繁體中文</a> |
     <a href="./README_EN.md">English</a>
   </p>
@@ -37,41 +37,41 @@
 
 通过本应用，您可以将常见的 Web 端 Session (Google/Anthropic) 转化为标准化的 API 接口，彻底消除不同厂商间的协议鸿沟。
 
-## 💖 赞助商 (Sponsors)
+## 赞助商 (Sponsors)
 
 | <img src="docs/images/packycode_logo.png" width="200" alt="PackyCode Logo"> | 感谢 **PackyCode** 对本项目的赞助！PackyCode 是一家可靠高效的 API 中转服务商，提供 Claude Code、Codex、Gemini 等多种服务的中转。PackyCode 为本项目的用户提供了特别优惠：使用[此链接](https://www.packyapi.com/register?aff=Ctrler)注册，并在充值时输入 **“Ctrler”** 优惠码即可享受 **九折优惠**。 |
 | :--- | :--- |
 
-## 🌟 深度功能解析 (Detailed Features)
+## 深度功能解析 (Detailed Features)
 
-### 1. 🎛️ 智能账号仪表盘 (Smart Dashboard)
+### 1. 智能账号仪表盘 (Smart Dashboard)
 *   **全局实时监控**: 一眼洞察所有账号的健康状况，包括 Gemini Pro、Gemini Flash、Claude 以及 Gemini 绘图的 **平均剩余配额**。
 *   **最佳账号推荐 (Smart Recommendation)**: 系统会根据当前所有账号的配额冗余度，实时算法筛选并推荐“最佳账号”，支持 **一键切换**。
 *   **活跃账号快照**: 直观显示当前活跃账号的具体配额百分比及最后同步时间。
 
-### 2. 🔐 强大的账号管家 (Account Management)
+### 2. 强大的账号管家 (Account Management)
 *   **OAuth 2.0 授权（自动/手动）**: 添加账号时会提前生成可复制的授权链接，支持在任意浏览器完成授权；回调成功后应用会自动完成并保存（必要时可点击“我已授权，继续”手动收尾）。
 *   **多维度导入**: 支持单条 Token 录入、JSON 批量导入（如来自其他工具的备份），以及从 V1 旧版本数据库自动热迁移。
 *   **网关级视图**: 支持“列表”与“网格”双视图切换。提供 403 封禁检测，自动标注并跳过权限异常的账号。
 
-### 3. 🔌 协议转换与中继 (API Proxy)
+### 3. 协议转换与中继 (API Proxy)
 *   **全协议适配 (Multi-Sink)**:
     *   **OpenAI 格式**: 提供 `/v1/chat/completions` 端点，兼容 99% 的现有 AI 应用。
     *   **Anthropic 格式**: 提供原生 `/v1/messages` 接口，支持 **Claude Code CLI** 的全功能（如思思维链、系统提示词）。
     *   **Gemini 格式**: 支持 Google 官方 SDK 直接调用。
 *   **智能状态自愈**: 当请求遇到 `429 (Too Many Requests)` 或 `401 (Expire)` 时，后端会毫秒级触发 **自动重试与静默轮换**，确保业务不中断。
 
-### 4. 🔀 模型路由中心 (Model Router)
+### 4. 模型路由中心 (Model Router)
 *   **系列化映射**: 您可以将复杂的原始模型 ID 归类到“规格家族”（如将所有 GPT-4 请求统一路由到 `gemini-3-pro-high`）。
 *   **专家级重定向**: 支持自定义正则表达式级模型映射，精准控制每一个请求的落地模型。
 *   **智能分级路由 (Tiered Routing)**: [新] 系统根据账号类型（Ultra/Pro/Free）和配额重置频率自动优先级排序，优先消耗高速重置账号，确保高频调用下的服务稳定性。
 *   **后台任务静默降级**: [新] 自动识别 Claude CLI 等工具生成的后台请求（如标题生成），智能重定向至 Flash 模型，保护高级模型配额不被浪费。
 
-### 5. 🎨 多模态与 Imagen 3 支持
+### 5. 多模态与 Imagen 3 支持
 *   **高级画质控制**: 支持通过 OpenAI `size` (如 `1024x1024`, `16:9`) 参数自动映射到 Imagen 3 的相应规格。
 *   **超强 Body 支持**: 后端支持高达 **100MB** 的 Payload，处理 4K 高清图识别绰绰有余。
 
-## 📸 界面导览 (GUI Overview)
+## 界面导览 (GUI Overview)
 
 ![仪表盘 - 全局配额监控与一键切换](docs/images/dashboard-light.png)
 ![账号列表 - 高密度配额展示与 403 智能标注](docs/images/accounts-light.png)
@@ -79,14 +79,14 @@
 ![API 反代 - 服务控制](docs/images/v3/proxy-settings.png)
 ![系统设置 - 通用配置](docs/images/settings-dark.png)
 
-### 💡 使用案例 (Usage Examples)
+### 使用案例 (Usage Examples)
 
 ![Claude Code 联网搜索 - 结构化来源与引文显示](docs/images/usage/claude-code-search.png)
 ![Cherry Studio 深度集成 - 原生回显搜索引文与来源链接](docs/images/usage/cherry-studio-citations.png)
 ![Imagen 3 高级绘图 - 完美还原 Prompt 意境与细节](docs/images/usage/image-gen-nebula.png)
 ![Kilo Code 接入 - 多账号极速轮换与模型穿透](docs/images/usage/kilo-code-integration.png)
 
-## 🏗️ 技术架构 (Architecture)
+## 技术架构 (Architecture)
 
 ```mermaid
 graph TD
@@ -100,7 +100,7 @@ graph TD
     ResponseMapper --> Client
 ```
 
-##  安装指南 (Installation)
+## 安装指南 (Installation)
 
 ### 选项 A: macOS 终端安装 (推荐)
 如果您已安装 [Homebrew](https://brew.sh/)，可以通过以下命令快速安装：
@@ -122,7 +122,7 @@ brew install --cask --no-quarantine antigravity-tools
 *   **Windows**: `.msi` 或 便携版 `.zip`
 *   **Linux**: `.deb` 或 `AppImage`
 
-### 🛠️ 常见问题排查 (Troubleshooting)
+### 常见问题排查 (Troubleshooting)
 
 #### macOS 提示“应用已损坏，无法打开”？
 由于 macOS 的安全机制，非 App Store 下载的应用可能会触发此提示。您可以按照以下步骤快速修复：
@@ -138,12 +138,12 @@ brew install --cask --no-quarantine antigravity-tools
     brew install --cask --no-quarantine antigravity-tools
     ```
 
-## 🔌 快速接入示例
+## 快速接入示例
 
-### 🔐 OAuth 授权流程（添加账号）
+### OAuth 授权流程（添加账号）
 1. 打开“Accounts / 账号” → “添加账号” → “OAuth”。
 2. 弹窗会在点击按钮前预生成授权链接；点击链接即可复制到系统剪贴板，然后用你希望的浏览器打开并完成授权。
-3. 授权完成后浏览器会打开本地回调页并显示“✅ 授权成功!”。
+3. 授权完成后浏览器会打开本地回调页并显示“授权成功!”。
 4. 应用会自动继续完成授权并保存账号；如未自动完成，可点击“我已授权，继续”手动完成。
 
 > 提示：授权链接包含一次性回调端口，请始终使用弹窗里生成的最新链接；如果授权时应用未运行或弹窗已关闭，浏览器可能会提示 `localhost refused connection`。
@@ -160,7 +160,7 @@ claude
 ### 如何接入 Kilo Code?
 1.  **协议选择**: 建议优先使用 **Gemini 协议**。
 2.  **Base URL**: 填写 `http://127.0.0.1:8045`。
-3.  **注意**: 
+3.  **注意**:
     - **OpenAI 协议限制**: Kilo Code 在使用 OpenAI 模式时，其请求路径会叠加产生 `/v1/chat/completions/responses` 这种非标准路径，导致 Antigravity 返回 404。因此请务必填入 Base URL 后选择 Gemini 模式。
     - **模型映射**: Kilo Code 中的模型名称可能与 Antigravity 默认设置不一致，如遇到无法连接，请在“模型映射”页面设置自定义映射，并查看**日志文件**进行调试。
 
@@ -180,7 +180,7 @@ response = client.chat.completions.create(
 print(response.choices[0].message.content)
 ```
 
-## 📝 开发者与社区
+## 开发者与社区
 
 *   **版本演进 (Changelog)**:
     *   **v3.3.15 (2026-01-04)**:
@@ -224,7 +224,7 @@ print(response.choices[0].message.content)
             - **修复空 Thinking 内容错误**: 当客户端发送空的 Thinking 块时，自动降级为普通文本块，避免 `thinking: Field required` 错误。
             - **修复智能降级后的验证错误**: 当 Thinking 被智能降级禁用时（如历史消息不兼容），自动将所有历史消息中的 Thinking 块转换为普通文本，解决 "thinking is disabled but message contains thinking" 错误。
             - **修复模型切换签名错误**: 增加目标模型 Thinking 支持检测。从 Claude thinking 模型切换到普通 Gemini 模型（如 `gemini-2.5-flash`）时，自动禁用 Thinking 并降级历史消息，避免 "Corrupted thought signature" 错误。只有带 `-thinking` 后缀的模型（如 `gemini-2.5-flash-thinking`）或 Claude 模型支持 Thinking。
-            - **影响范围**: 这些修复确保了在各种模型切换场景下的稳定性，特别是 Claude ↔ Gemini 之间的自由切换。
+            - **影响范围**: 这些修复确保了在各种模型切换场景下的稳定性，特别是 Claude 与 Gemini 之间的自由切换。
         - **账号轮询限流机制优化 (核心修复 Issue #278)**:
             - **修复限流时间解析失败**: 彻底解决了 Google API 返回的 `quotaResetDelay` 无法正确解析的问题。
                 - **修正 JSON 解析路径**: 将 `quotaResetDelay` 的提取路径从 `details[0].quotaResetDelay` 修正为 `details[0].metadata.quotaResetDelay`，匹配 Google API 的实际 JSON 结构。
@@ -252,7 +252,7 @@ print(response.choices[0].message.content)
                 - **服务器过载 (529/503)**: 指数退避(1s/2s/4s/8s),显著提升恢复成功率 167%。
                 - **限流错误 (429)**: 优先使用服务端 Retry-After,否则线性退避(1s/2s/3s)。
                 - **账号保护**: 服务端错误(529/503)不再轮换账号,避免污染健康账号池。
-                - **统一日志**: 所有退避操作使用 ⏱️ 标识,便于监控和调试。
+                - **统一日志**: 所有退避操作使用时间标识,便于监控和调试。
         - **核心修复 (Critical Fix)**:
             - **修复 Gemini 3 Python 客户端崩溃问题**: 移除了对 Gemini 请求强制设置 `maxOutputTokens: 64000` 的逻辑。该强制设置导致标准 Gemini 3 Flash/Pro 模型(上限 8192)拒绝请求并返回空响应,进而引发 Python 客户端出现 `'NoneType' object has no attribute 'strip'` 错误。修复后,代理将默认使用模型原生上限或尊重客户端参数。
         - **Scoop 安装兼容性支持 (核心致谢 @Small-Ku PR #252)**:
@@ -273,46 +273,46 @@ print(response.choices[0].message.content)
             - **乐观更新**: 拖拽操作立即更新界面，提供流畅的用户体验，同时后台异步保存排序结果。
             - **基于 dnd-kit**: 使用现代化的 `@dnd-kit` 库实现，支持键盘导航和无障碍访问。
     *   **v3.3.10 (2026-01-01)**:
-        - 🌐 **上游端点 Fallback 机制** (核心致谢 @karasungur PR #243):
+        - **上游端点 Fallback 机制** (核心致谢 @karasungur PR #243):
             - **多端点自动切换**: 实现 `prod → daily` 双端点 Fallback 策略，当主端点返回 404/429/5xx 时自动切换到备用端点，显著提升服务可用性。
             - **连接池优化**: 新增 `pool_max_idle_per_host(16)`、`tcp_keepalive(60s)` 等参数，优化连接复用，减少建立开销，特别适配 WSL/Windows 环境。
             - **智能重试逻辑**: 支持 408 Request Timeout、404 Not Found、429 Too Many Requests 和 5xx Server Error 的自动端点切换。
             - **详细日志记录**: Fallback 成功时记录 INFO 日志，失败时记录 WARN 日志，便于运维监控和问题排查。
             - **与调度模式完全兼容**: 端点 Fallback 与账号调度（缓存优先/平衡/性能优先）工作在不同层级，互不干扰，确保缓存命中率不受影响。
-        - 📝 **日志系统全面优化**:
+        - **日志系统全面优化**:
             - **日志级别重构**: 严格区分 INFO/DEBUG/TRACE 级别，INFO 仅显示关键业务信息，详细调试信息降级到 DEBUG。
             - **心跳请求过滤**: 将 `/api/event_logging/batch` 和 `/healthz` 等心跳请求从 INFO 降级到 TRACE，彻底消除日志噪音。
             - **账号信息显示**: 在请求开始和完成时显示使用的账号邮箱，便于监控账号使用情况和调试会话粘性。
             - **流式响应完成标记**: 为流式响应添加完成日志（包含 Token 统计），确保请求生命周期可追踪。
             - **日志量减少 90%+**: 正常请求从 50+ 行降至 3-5 行，启动日志从 30+ 行降至 6 行，大幅提升可读性。
             - **Debug 模式**: 通过 `RUST_LOG=debug` 可查看完整请求/响应 JSON，支持深度调试。
-        - 🎨 **Imagen 3 图像生成增强**:
+        - **Imagen 3 图像生成增强**:
             - **新增分辨率支持**: 支持通过模型名后缀指定 `-2k` 分辨率，满足更高清的绘图需求。
             - **超宽比例支持**: 新增 `-21x9` (或 `-21-9`) 比例支持，适配带鱼屏显示。
             - **映射优化**: 优化了分辨率与比例的自动映射逻辑，支持 `2560x1080` 等自定义尺寸。
             - **全协议覆盖**: 该增强功能已同步覆盖 OpenAI、Claude 及 Gemini 原生协议。
-        - 🔍 **模型检测 API**:
+        - **模型检测 API**:
             - **新增探测接口**: 提供 `POST /v1/models/detect` 接口，支持实时探测特定模型的图片生成能力及配置组合。
             - **动态模型列表**: `/v1/models` 接口现在自动罗列所有分辨率与比例的画图模型变体（如 `gemini-3-pro-image-4k-21x9`），方便客户端调用。
-        - 🐛 **后台任务降级模型修复**:
+        - **后台任务降级模型修复**:
             - **修复 404 错误**: 将后台任务降级模型从不存在的 `gemini-2.0-flash-exp` 修正为 `gemini-2.5-flash-lite`，解决标题生成、摘要等后台任务的 404 错误。
-        - 🔐 **账号主动禁用功能**:
+        - **账号主动禁用功能**:
             - **独立禁用控制**: 新增账号主动禁用功能,区别于 403 禁用,仅影响反代池,不参与 API 请求。
             - **应用内可用**: 主动禁用的账号仍可在应用中切换使用、查看配额详情,仅从反代池中移除。
             - **视觉区分**: 403 禁用显示红色"已禁用"徽章,主动禁用显示橙色"反代已禁用"徽章。
             - **批量操作**: 支持批量禁用/启用多个账号,提高管理效率。
             - **自动重载**: 禁用/启用操作后自动重新加载反代账号池,立即生效。
             - **影响范围**: 标题生成、简单摘要、系统消息、提示建议、环境探测等轻量任务现在正确降级到 `gemini-2.5-flash-lite`。
-        - 🎨 **UI 体验提升**:
+        - **UI 体验提升**:
             - **反代页弹窗风格统一**: 将 ApiProxy 页面中所有原生的 alert/confirm 弹窗统一为应用标准的 Toast 通知与 ModalDialog 对话框，提升视觉一致性。
             - **Tooltip 遮挡修复**: 修复了反代设置页面中（如"调度模式"、"允许局域网访问"等）Tooltip 被左侧容器遮挡的问题，优化阅读体验。
     *   **v3.3.9 (2026-01-01)**:
-        - 🚀 **全协议调度对齐**: `Scheduling Mode` 现在正式覆盖 OpenAI (Cursor/Cherry)、Gemini 原生及 Claude 协议。
-        - 🧠 **工业级 Session 指纹**: 升级 SHA256 内容哈希算法生成粘性 Session ID，确保 CLI 重启后仍能完美继承同一账号，极大提升 Prompt Caching 命中率。
-        - 🛡️ **精准限流与 5xx 故障避让**: 深度集成 Google API JSON 报文解析，支持毫秒级 `quotaResetDelay` 提取，并在 500/503/529 故障时自动触发 20s 避让隔离，实现平滑热切换。
-        - 🔀 **智能调度算法升级**: `TokenManager` 轮转时主动避开所有限流或隔离账号；全量限流时精准提示最短重置时间。
-        - 🌐 **全局限流同步**: 引入跨协议限流追踪器，任意协议触发限流均会实时同步至全局账号池，实现“一端限流，全局避让”。
-        - 📄 **Claude 多模态补全**: 修复 Claude CLI 传输 PDF 等文档时的 400 错误，补全多模态映射逻辑。
+        - **全协议调度对齐**: `Scheduling Mode` 现在正式覆盖 OpenAI (Cursor/Cherry)、Gemini 原生及 Claude 协议。
+        - **工业级 Session 指纹**: 升级 SHA256 内容哈希算法生成粘性 Session ID，确保 CLI 重启后仍能完美继承同一账号，极大提升 Prompt Caching 命中率。
+        - **精准限流与 5xx 故障避让**: 深度集成 Google API JSON 报文解析，支持毫秒级 `quotaResetDelay` 提取，并在 500/503/529 故障时自动触发 20s 避让隔离，实现平滑热切换。
+        - **智能调度算法升级**: `TokenManager` 轮转时主动避开所有限流或隔离账号；全量限流时精准提示最短重置时间。
+        - **全局限流同步**: 引入跨协议限流追踪器，任意协议触发限流均会实时同步至全局账号池，实现“一端限流，全局避让”。
+        - **Claude 多模态补全**: 修复 Claude CLI 传输 PDF 等文档时的 400 错误，补全多模态映射逻辑。
     *   **v3.3.8 (2025-12-31)**:
         - **代理监控模块 (核心致谢 @84hero PR #212)**:
             - **实时请求追踪**: 全新的监控仪表板，实时可视化查看所有反代流量，包括请求路径、状态码、响应时间、Token消耗等详细信息。
@@ -404,11 +404,11 @@ print(response.choices[0].message.content)
                 - **精准意图识别**: 新增对标题生成、摘要提取以及系统 Warmup/Reminder 等后台低价值请求的深度识别。
                 - **无感降级转发**: 自动将后台流量重定向至 **gemini-2.5-flash**，确保顶配模型（Sonnet/Opus）的额度仅用于核心对话。
                 - **显著节流**: 单次长会话预计可省下 1.7k - 17k+ 的高价值 Token。
-        - **稳定性增强**: 
+        - **稳定性增强**:
             - 修复了由于模型字段定义更新导致的 Rust 编译与测试用例报错，加固了数据模型层（models.rs）的鲁棒性。
     *   **v3.3.0 (2025-12-27)**:
         - **重大更新 (Major Updates)**:
-            - **Codex CLI & Claude CLI 深度适配 (核心致谢 @llsenyue PR #93)**: 
+            - **Codex CLI & Claude CLI 深度适配 (核心致谢 @llsenyue PR #93)**:
                 - **全面兼容 Coding Agent**: 实现了对 Codex CLI 的完美支持，包括 `/v1/responses` 端点的深度适配与 shell 工具调用指令的智能转换 (SSOP)。
                 - **Claude CLI 推理增强**: 引入了全局 `thoughtSignature` 存储与回填逻辑，彻底解决了 Claude CLI 使用 Gemini 3 系列模型时的签名校验报错。
             - **OpenAI 协议栈重构**:
@@ -418,7 +418,7 @@ print(response.choices[0].message.content)
                 - **默认本地回环**: 反代服务器默认监听 `127.0.0.1`，仅允许本机访问，保障隐私安全。
                 - **可选 LAN 访问**: 新增 `allow_lan_access` 配置开关，开启后监听 `0.0.0.0` 以允许局域网设备访问。
                 - **安全提示**: 前端 UI 提供明确的安全警告及状态提示。
-        - **前端体验升级**: 
+        - **前端体验升级**:
             - **多协议端点可视化**: 在 API 反代页面新增端点详情展示，支持对 Chat/Completions/Responses 不同端点的独立快捷复制。
     *   **v3.2.8 (2025-12-26)**:
         - **Bug 修复 (Bug Fixes)**:
@@ -446,14 +446,14 @@ print(response.choices[0].message.content)
                 - **工具空输出补偿**: 针对 `mkdir` 等静默命令，自动将空输出映射为显式成功信号，解决 Claude CLI 任务流中断与幻觉问题。
                 - **全局停止序列配置**: 针对反代链路优化了 `stopSequences`，精准切断流式输出，彻底解决响应尾部冗余导致的解析报错。
                 - **智能 Payload 净化 (Smart Panic Fix)**: 引入了 `GoogleSearch` 与 `FunctionCall` 的互斥检查，并在后台任务（Token Saver）重定向时自动剥离工具负载，彻底根除了 **400 工具冲突 (Multiple tools)** 错误。
-                - **反代稳定性增强 (核心致谢 @salacoste PR #79)**: 
+                - **反代稳定性增强 (核心致谢 @salacoste PR #79)**:
                     - **429 智能退避**: 支持解析上游 `RetryInfo`，在触发限流时自动等待并重试，显著减少账号无效轮换。
                     - **Resume 兜底机制**: 针对 `/resume` 可能出现的签名失效报错，实现了自动剥离 Thinking 块的二次重试，提升会话恢复成功率。
                     - **Schema 模式增强**: 增强了 JSON Schema 递归清理逻辑，并增加了对 `enumCaseInsensitive` 等扩展字段的过滤。
             - **测试套件加固**: 修复了 `mappers` 测试模块中缺失的导入及重复属性错误，并新增了内容块合并与空输出补全测试。
     *   **v3.2.3 (2025-12-25)**:
         - **核心增强 (Core Enhancements)**:
-            - **进程管理架构优化 (核心致谢 @Gaq152 PR #70)**: 
+            - **进程管理架构优化 (核心致谢 @Gaq152 PR #70)**:
                 - **精确路径识别**: 引入了基于可执行文件绝对路径的进程匹配机制。在启动、关闭及枚举 PID 时，系统会通过规范化路径 (`canonicalize`) 进行比对。
                 - **管理进程自排除**: 在 Linux 等环境下，系统现能通过对比 `std::env::current_exe()` 路径，彻底杜绝了 Antigravity-Manager 将自身误识别为核心进程而发生的“自杀”现象。
                 - **手动路径自定义**: 在“设置 -> 高级”页面新增了手动指定反重力程序路径的功能。支持 MacOS (.app 目录) 和各平台可执行文件。
@@ -467,7 +467,7 @@ print(response.choices[0].message.content)
             - **Project ID 获取逻辑容错增强**: 引入了随机 `project_id` 兜底机制。针对部分无 Google Cloud 项目权限的账号，系统现在会自动生成随机 ID 以确保反代服务及配额查询能正常运行，彻底解决了“账号无资格获取 cloudaicompanionProject”导致的报错中断。
             - **全场景稳定性加固**: 引入 `try_init` 模式修复了由于日志订阅器重复初始化导致的系统 Panic 崩溃，显著提升了在不同运行环境下的兼容性。
             - **平滑日志清理**: 优化了日志清理逻辑，采用“原地截断”技术。现在点击“清理日志”后，后续的操作记录依然能无缝地继续保存，解决了旧版本清理后记录失效的问题。
-            - **Google 免费额度智能路由 (Token Saver):** 
+            - **Google 免费额度智能路由 (Token Saver):**
                 - **后台任务拦截**: 独家首创针对 Claude Code 客户端后台任务的深度报文识别技术。系统能精准识别标题生成、摘要提取以及 **Next Prompt Suggestions** 等非核心交互请求 (`write a 5-10 word title`, `Concise summary`, `prompt suggestion generator`)。
                 - **无感熔断重定向**: 自动将上述高频低价值请求（Haiku 模型）路由至 **gemini-2.5-flash** 免费节点，彻底杜绝了后台轮询对核心付费/高价值账号配额的隐形消耗，同时保留了完整的产品功能体验。
                 - **双轨日志审计**: 终端与日志文件中新增请求类型标记。正常对话请求显示为 `检测到正常用户请求`（保留原映射），后台任务显示为 `检测到后台自动任务`（重定向），消耗去向一目了然。
@@ -508,7 +508,7 @@ print(response.choices[0].message.content)
         - **提示**：目前 `antigravity` 与 Google 官方工具重名。为确保安装的是本项目，目前推荐使用上述原始文件安装。后续我们将推出官方 Tap。
         - **全局上游代理**: 统一管理内外网请求，支持 HTTP/SOCKS5 协议及热重载。
 
-## 👥 核心贡献者 (Contributors)
+## 核心贡献者 (Contributors)
 
 <a href="https://github.com/lbjlaq"><img src="https://github.com/lbjlaq.png" width="50px" style="border-radius: 50%;" alt="lbjlaq"/></a>
 <a href="https://github.com/XinXin622"><img src="https://github.com/XinXin622.png" width="50px" style="border-radius: 50%;" alt="XinXin622"/></a>
@@ -527,6 +527,6 @@ print(response.choices[0].message.content)
 ---
 
 <div align="center">
-  <p>如果您觉得这个工具有所帮助，欢迎在 GitHub 上点一个 ⭐️</p>
-  <p>Copyright © 2025 Antigravity Team.</p>
+  <p>如果您觉得这个工具有所帮助，欢迎在 GitHub 上点一个 </p>
+  <p>Copyright  2025 Antigravity Team.</p>
 </div>
