@@ -104,23 +104,18 @@ pub fn get_stats() -> Result<crate::proxy::monitor::ProxyStats, String> {
     let db_path = get_proxy_db_path()?;
     let conn = Connection::open(db_path).map_err(|e| e.to_string())?;
 
-    let total_requests: u64 = conn.query_row(
-        "SELECT COUNT(*) FROM request_logs",
-        [],
-        |row| row.get(0),
-    ).map_err(|e| e.to_string())?;
-
-    let success_count: u64 = conn.query_row(
-        "SELECT COUNT(*) FROM request_logs WHERE status >= 200 AND status < 400",
-        [],
-        |row| row.get(0),
-    ).map_err(|e| e.to_string())?;
-
-    let error_count: u64 = conn.query_row(
-        "SELECT COUNT(*) FROM request_logs WHERE status < 200 OR status >= 400",
-        [],
-        |row| row.get(0),
-    ).map_err(|e| e.to_string())?;
+    // Use a single query and COALESCE to avoid NULL conversion failures on empty tables.
+    let (total_requests, success_count, error_count): (u64, u64, u64) = conn
+        .query_row(
+            "SELECT
+                COUNT(*) as total,
+                COALESCE(SUM(CASE WHEN status >= 200 AND status < 400 THEN 1 ELSE 0 END), 0) as success,
+                COALESCE(SUM(CASE WHEN status < 200 OR status >= 400 THEN 1 ELSE 0 END), 0) as error
+             FROM request_logs",
+            [],
+            |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?)),
+        )
+        .map_err(|e| e.to_string())?;
 
     Ok(crate::proxy::monitor::ProxyStats {
         total_requests,
