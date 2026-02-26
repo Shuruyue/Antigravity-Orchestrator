@@ -53,6 +53,9 @@ pub fn transform_openai_request(request: &OpenAIRequest, project_id: &str, mappe
     if global_thought_sig.is_some() {
         tracing::debug!("从全局存储获取到 thoughtSignature (长度: {})", global_thought_sig.as_ref().unwrap().len());
     }
+    let is_thinking_model =
+        mapped_model.to_lowercase().contains("thinking")
+        || request.model.to_lowercase().contains("thinking");
 
     // 2. 构建 Gemini contents (过滤掉 system)
     let contents: Vec<Value> = request
@@ -164,6 +167,9 @@ pub fn transform_openai_request(request: &OpenAIRequest, project_id: &str, mappe
                     // [修复] 为该消息内的所有工具调用注入 thoughtSignature (PR #114 优化)
                     if let Some(ref sig) = global_thought_sig {
                         func_call_part["thoughtSignature"] = json!(sig);
+                    } else if is_thinking_model {
+                        // Keep Vertex/Gemini tool calls valid when upstream signature is absent.
+                        func_call_part["thoughtSignature"] = json!("skip_thought_signature_validator");
                     }
 
                     parts.push(func_call_part);
