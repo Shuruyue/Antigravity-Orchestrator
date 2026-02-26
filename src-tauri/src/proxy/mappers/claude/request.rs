@@ -502,8 +502,9 @@ fn build_contents(
                 for item in blocks {
                     match item {
                         ContentBlock::Text { text } => {
-                            if text != "(no content)" {
-                                parts.push(json!({"text": text}));
+                            let trimmed = text.trim();
+                            if text != "(no content)" && !trimmed.is_empty() {
+                                parts.push(json!({"text": trimmed}));
                             }
                         }
                         ContentBlock::Thinking { thinking, signature, .. } => {
@@ -513,9 +514,9 @@ fn build_contents(
                             // to avoid "thinking is disabled but message contains thinking" error
                             if !is_thinking_enabled {
                                 tracing::warn!("[Claude-Request] Thinking disabled. Downgrading thinking block to text.");
-                                if !thinking.is_empty() {
+                                if !thinking.trim().is_empty() {
                                     parts.push(json!({
-                                        "text": thinking
+                                        "text": thinking.trim()
                                     }));
                                 }
                                 continue;
