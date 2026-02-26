@@ -260,7 +260,9 @@ pub fn transform_openai_request(request: &OpenAIRequest, project_id: &str, mappe
                 func
             };
 
-            if let Some(name) = gemini_func.get("name").and_then(|v| v.as_str()) {
+            let name_opt = gemini_func.get("name").and_then(|v| v.as_str()).map(|s| s.to_string());
+
+            if let Some(name) = &name_opt {
                 // 跳过内置联网工具名称，避免重复定义
                 if name == "web_search" || name == "google_search" || name == "web_search_20250305" {
                     continue;
@@ -271,6 +273,10 @@ pub fn transform_openai_request(request: &OpenAIRequest, project_id: &str, mappe
                         obj.insert("name".to_string(), json!("shell"));
                     }
                 }
+            } else {
+                 // [FIX] 如果工具没有名称，视为无效工具直接跳过 (防止 REQUIRED_FIELD_MISSING)
+                 tracing::warn!("[OpenAI-Request] Skipping tool without name: {:?}", gemini_func);
+                 continue;
             }
 
             // [NEW CRITICAL FIX] 清除函数定义根层级的非法字段 (解决报错持久化)
@@ -279,6 +285,7 @@ pub fn transform_openai_request(request: &OpenAIRequest, project_id: &str, mappe
                 obj.remove("strict");
                 obj.remove("additionalProperties");
                 obj.remove("type"); // [NEW] Gemini 不支持在 FunctionDeclaration 根层级出现 type: "function"
+                obj.remove("external_web_access"); // [FIX #1278] Remove invalid field injected by OpenAI Codex
             }
 
             if let Some(params) = gemini_func.get_mut("parameters") {
