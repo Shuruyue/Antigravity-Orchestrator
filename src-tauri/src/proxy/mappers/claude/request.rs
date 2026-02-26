@@ -848,6 +848,12 @@ fn build_generation_config(
 
             config["thinkingConfig"] = thinking_config;
         }
+    } else if is_thinking_enabled {
+        // Auto-enabled thinking models (e.g. Opus) still require a concrete budget.
+        config["thinkingConfig"] = json!({
+            "includeThoughts": true,
+            "thinkingBudget": 10000
+        });
     }
 
     // 其他参数
