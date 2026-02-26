@@ -872,17 +872,35 @@ fn build_generation_config(
         config["candidateCount"] = json!(1);
     }*/
 
-    // max_tokens 映射为 maxOutputTokens
-    config["maxOutputTokens"] = json!(64000);
+    let model_lower = claude_req.model.to_lowercase();
+    let mut final_max_tokens = claude_req.max_tokens.map(|v| v as u64).unwrap_or(64000);
 
-    // [优化] 设置全局停止序列，防止流式输出冗余 (参考 done-hub)
-    config["stopSequences"] = json!([
-        "<|user|>",
-        "<|endoftext|>",
-        "<|end_of_turn|>",
-        "[DONE]",
-        "\n\nHuman:"
-    ]);
+    // Opus 4.6 thinking needs strict alignment to avoid 400 errors on v1internal.
+    if is_thinking_enabled && model_lower.contains("claude-opus-4-6-thinking") {
+        final_max_tokens = 57344;
+    }
+
+    // Keep maxOutputTokens above thinkingBudget when thinking is enabled.
+    if let Some(budget) = config
+        .get("thinkingConfig")
+        .and_then(|t| t.get("thinkingBudget"))
+        .and_then(|v| v.as_u64())
+    {
+        if final_max_tokens <= budget {
+            final_max_tokens = budget + 8192;
+        }
+    }
+    config["maxOutputTokens"] = json!(final_max_tokens);
+
+    // Opus 4.6 thinking performs better without stopSequences in this proxy path.
+    if !(is_thinking_enabled && model_lower.contains("claude-opus-4-6-thinking")) {
+        config["stopSequences"] = json!([
+            "<|user|>",
+            "<|endoftext|>",
+            "<|end_of_turn|>",
+            "\n\nHuman:"
+        ]);
+    }
 
     config
 }
