@@ -2,6 +2,8 @@ import { useEffect, useRef } from 'react';
 import { useConfigStore } from '../../stores/useConfigStore';
 import { useAccountStore } from '../../stores/useAccountStore';
 
+const MAX_INTERVAL_MS = 2_147_483_647;
+
 function BackgroundTaskRunner() {
     const { config } = useConfigStore();
     const { refreshAllQuotas } = useAccountStore();
@@ -29,7 +31,7 @@ function BackgroundTaskRunner() {
             intervalId = setInterval(() => {
                 console.log('[BackgroundTask] Auto-refreshing all quotas...');
                 refreshAllQuotas();
-            }, refresh_interval * 60 * 1000);
+            }, Math.min(refresh_interval * 60 * 1000, MAX_INTERVAL_MS));
         }
 
         return () => {
@@ -60,7 +62,7 @@ function BackgroundTaskRunner() {
             intervalId = setInterval(() => {
                 console.log('[BackgroundTask] Auto-syncing current account from DB...');
                 syncAccountFromDb();
-            }, sync_interval * 1000);
+            }, Math.min(sync_interval * 1000, MAX_INTERVAL_MS));
         }
 
         return () => {

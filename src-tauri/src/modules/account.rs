@@ -16,6 +16,114 @@ const DATA_DIR: &str = ".antigravity_tools";
 const ACCOUNTS_INDEX: &str = "accounts.json";
 const ACCOUNTS_DIR: &str = "accounts";
 
+fn load_account_at_path(account_path: &PathBuf) -> Result<Account, String> {
+    let content = fs::read_to_string(account_path)
+        .map_err(|e| format!("读取账号数据失败: {}", e))?;
+    serde_json::from_str(&content)
+        .map_err(|e| format!("解析账号数据失败: {}", e))
+}
+
+fn sanitize_index_content(raw: &[u8]) -> String {
+    // Strip UTF-8 BOM if present.
+    let bytes = if raw.starts_with(&[0xEF, 0xBB, 0xBF]) {
+        &raw[3..]
+    } else {
+        raw
+    };
+
+    // Strip leading NUL bytes from corrupted writes.
+    let bytes = bytes
+        .iter()
+        .skip_while(|&&b| b == 0x00)
+        .copied()
+        .collect::<Vec<u8>>();
+
+    String::from_utf8_lossy(&bytes).into_owned()
+}
+
+fn rebuild_index_from_accounts_in_dir(data_dir: &PathBuf) -> Result<AccountIndex, String> {
+    let accounts_dir = data_dir.join(ACCOUNTS_DIR);
+    if !accounts_dir.exists() {
+        return Ok(AccountIndex::new());
+    }
+
+    let mut summaries = Vec::new();
+    let entries = fs::read_dir(&accounts_dir)
+        .map_err(|e| format!("读取账号目录失败: {}", e))?;
+
+    for entry in entries {
+        let entry = match entry {
+            Ok(v) => v,
+            Err(e) => {
+                crate::modules::logger::log_warn(&format!("读取账号目录项失败: {}", e));
+                continue;
+            }
+        };
+        let path = entry.path();
+        if path.extension().and_then(|s| s.to_str()) != Some("json") {
+            continue;
+        }
+
+        match load_account_at_path(&path) {
+            Ok(account) => {
+                summaries.push(AccountSummary {
+                    id: account.id,
+                    email: account.email,
+                    name: account.name,
+                    created_at: account.created_at,
+                    last_used: account.last_used,
+                });
+            }
+            Err(e) => {
+                crate::modules::logger::log_warn(&format!(
+                    "恢复索引时跳过损坏账号文件 {:?}: {}",
+                    path, e
+                ));
+            }
+        }
+    }
+
+    summaries.sort_by(|a, b| {
+        b.last_used
+            .cmp(&a.last_used)
+            .then_with(|| a.email.cmp(&b.email))
+    });
+
+    let current_account_id = summaries.first().map(|s| s.id.clone());
+    Ok(AccountIndex {
+        version: "2.0".to_string(),
+        accounts: summaries,
+        current_account_id,
+    })
+}
+
+fn backup_corrupt_index(data_dir: &PathBuf, raw_content: &[u8]) {
+    let ts = chrono::Utc::now().timestamp();
+    let backup_name = format!("accounts.json.corrupt-{}-{}.bak", ts, Uuid::new_v4());
+    let backup_path = data_dir.join(backup_name);
+    if let Err(e) = fs::write(&backup_path, raw_content) {
+        crate::modules::logger::log_warn(&format!("写入损坏索引备份失败: {}", e));
+    }
+}
+
+fn save_account_index_in_dir(data_dir: &PathBuf, index: &AccountIndex) -> Result<(), String> {
+    let index_path = data_dir.join(ACCOUNTS_INDEX);
+    let temp_path = data_dir.join(format!("{}.tmp.{}", ACCOUNTS_INDEX, Uuid::new_v4()));
+
+    let content = serde_json::to_string_pretty(index)
+        .map_err(|e| format!("序列化账号索引失败: {}", e))?;
+
+    fs::write(&temp_path, content)
+        .map_err(|e| format!("写入临时索引文件失败: {}", e))?;
+
+    if let Err(e) = fs::rename(&temp_path, &index_path) {
+        let _ = fs::remove_file(&temp_path);
+        return Err(format!("替换索引文件失败: {}", e));
+    }
+
+    Ok(())
+}
+
 // ... existing functions get_data_dir, get_accounts_dir, load_account_index, save_account_index ...
 /// 获取数据目录路径
 pub fn get_data_dir() -> Result<PathBuf, String> {
@@ -48,67 +156,84 @@ pub fn get_accounts_dir() -> Result<PathBuf, String> {
 pub fn load_account_index() -> Result<AccountIndex, String> {
     let data_dir = get_data_dir()?;
     let index_path = data_dir.join(ACCOUNTS_INDEX);
-    // modules::logger::log_info(&format!("正在加载账号索引: {:?}", index_path)); // Optional: reduce noise
-    
+
     if !index_path.exists() {
-        crate::modules::logger::log_warn("账号索引文件不存在");
-        return Ok(AccountIndex::new());
+        crate::modules::logger::log_warn("账号索引文件不存在，尝试从账号文件自动恢复");
+        let recovered = rebuild_index_from_accounts_in_dir(&data_dir)?;
+        let _ = save_account_index_in_dir(&data_dir, &recovered);
+        return Ok(recovered);
     }
-    
-    let content = fs::read_to_string(&index_path)
+
+    let raw_content = fs::read(&index_path)
         .map_err(|e| format!("读取账号索引失败: {}", e))?;
-    
-    let index: AccountIndex = serde_json::from_str(&content)
-        .map_err(|e| format!("解析账号索引失败: {}", e))?;
-        
-    crate::modules::logger::log_info(&format!("成功加载索引，包含 {} 个账号", index.accounts.len()));
-    Ok(index)
+
+    if raw_content.is_empty() {
+        crate::modules::logger::log_warn("账号索引文件为空，尝试从账号文件自动恢复");
+        let recovered = rebuild_index_from_accounts_in_dir(&data_dir)?;
+        let _ = save_account_index_in_dir(&data_dir, &recovered);
+        return Ok(recovered);
+    }
+
+    let content = sanitize_index_content(&raw_content);
+    if content.trim().is_empty() {
+        crate::modules::logger::log_warn("账号索引内容无效(空白/BOM/NUL)，尝试自动恢复");
+        backup_corrupt_index(&data_dir, &raw_content);
+        let recovered = rebuild_index_from_accounts_in_dir(&data_dir)?;
+        let _ = save_account_index_in_dir(&data_dir, &recovered);
+        return Ok(recovered);
+    }
+
+    match serde_json::from_str::<AccountIndex>(&content) {
+        Ok(index) => {
+            crate::modules::logger::log_info(&format!("成功加载索引，包含 {} 个账号", index.accounts.len()));
+            Ok(index)
+        }
+        Err(e) => {
+            crate::modules::logger::log_error(&format!("解析账号索引失败，尝试自动恢复: {}", e));
+            backup_corrupt_index(&data_dir, &raw_content);
+            let recovered = rebuild_index_from_accounts_in_dir(&data_dir)?;
+            let _ = save_account_index_in_dir(&data_dir, &recovered);
+            Ok(recovered)
+        }
+    }
 }
 
 /// 保存账号索引 (原子化写入)
 pub fn save_account_index(index: &AccountIndex) -> Result<(), String> {
     let data_dir = get_data_dir()?;
-    let index_path = data_dir.join(ACCOUNTS_INDEX);
-    let temp_path = data_dir.join(format!("{}.tmp", ACCOUNTS_INDEX));
-    
-    let content = serde_json::to_string_pretty(index)
-        .map_err(|e| format!("序列化账号索引失败: {}", e))?;
-    
-    // 写入临时文件
-    fs::write(&temp_path, content)
-        .map_err(|e| format!("写入临时索引文件失败: {}", e))?;
-        
-    // 原子重命名
-    fs::rename(temp_path, index_path)
-        .map_err(|e| format!("替换索引文件失败: {}", e))
+    save_account_index_in_dir(&data_dir, index)
 }
 
 /// 加载账号数据
 pub fn load_account(account_id: &str) -> Result<Account, String> {
     let accounts_dir = get_accounts_dir()?;
     let account_path = accounts_dir.join(format!("{}.json", account_id));
-    
+
     if !account_path.exists() {
         return Err(format!("账号不存在: {}", account_id));
     }
-    
-    let content = fs::read_to_string(&account_path)
-        .map_err(|e| format!("读取账号数据失败: {}", e))?;
-    
-    serde_json::from_str(&content)
-        .map_err(|e| format!("解析账号数据失败: {}", e))
+
+    load_account_at_path(&account_path)
 }
 
 /// 保存账号数据
 pub fn save_account(account: &Account) -> Result<(), String> {
     let accounts_dir = get_accounts_dir()?;
     let account_path = accounts_dir.join(format!("{}.json", account.id));
+    let temp_path = accounts_dir.join(format!("{}.json.tmp.{}", account.id, Uuid::new_v4()));
     
     let content = serde_json::to_string_pretty(account)
         .map_err(|e| format!("序列化账号数据失败: {}", e))?;
-    
-    fs::write(&account_path, content)
-        .map_err(|e| format!("保存账号数据失败: {}", e))
+
+    fs::write(&temp_path, content)
+        .map_err(|e| format!("写入临时账号文件失败: {}", e))?;
+
+    if let Err(e) = fs::rename(&temp_path, &account_path) {
+        let _ = fs::remove_file(&temp_path);
+        return Err(format!("替换账号文件失败: {}", e));
+    }
+
+    Ok(())
 }
 
 /// 列出所有账号

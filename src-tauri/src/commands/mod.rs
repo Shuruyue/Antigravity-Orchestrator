@@ -58,7 +58,11 @@ pub async fn add_account(
 
 /// 删除账号
 #[tauri::command]
-pub async fn delete_account(app: tauri::AppHandle, account_id: String) -> Result<(), String> {
+pub async fn delete_account(
+    app: tauri::AppHandle,
+    proxy_state: tauri::State<'_, crate::commands::proxy::ProxyServiceState>,
+    account_id: String,
+) -> Result<(), String> {
     modules::logger::log_info(&format!("收到删除账号请求: {}", account_id));
     modules::delete_account(&account_id).map_err(|e| {
         modules::logger::log_error(&format!("删除账号失败: {}", e));
@@ -68,6 +72,8 @@ pub async fn delete_account(app: tauri::AppHandle, account_id: String) -> Result
 
     // 强制同步托盘
     crate::modules::tray::update_tray_menus(&app);
+    // 如果反代已启动，立刻重载内存账号池，避免已删除账号继续参与调度
+    let _ = crate::commands::proxy::reload_proxy_accounts(proxy_state).await;
     Ok(())
 }
 
@@ -75,6 +81,7 @@ pub async fn delete_account(app: tauri::AppHandle, account_id: String) -> Result
 #[tauri::command]
 pub async fn delete_accounts(
     app: tauri::AppHandle,
+    proxy_state: tauri::State<'_, crate::commands::proxy::ProxyServiceState>,
     account_ids: Vec<String>,
 ) -> Result<(), String> {
     modules::logger::log_info(&format!(
@@ -88,6 +95,8 @@ pub async fn delete_accounts(
 
     // 强制同步托盘
     crate::modules::tray::update_tray_menus(&app);
+    // 如果反代已启动，立刻重载内存账号池，避免已删除账号继续参与调度
+    let _ = crate::commands::proxy::reload_proxy_accounts(proxy_state).await;
     Ok(())
 }
 
