@@ -63,6 +63,14 @@ function Settings() {
         }
     }, [config]);
 
+    const clampInterval = (raw: string, min: number, max: number): number => {
+        const parsed = parseInt(raw, 10);
+        if (Number.isNaN(parsed)) {
+            return min;
+        }
+        return Math.min(Math.max(parsed, min), max);
+    };
+
     const handleSave = async () => {
         try {
             await saveConfig(formData);
@@ -322,7 +330,12 @@ function Settings() {
                                         min="1"
                                         max="60"
                                         value={formData.refresh_interval}
-                                        onChange={(e) => setFormData({ ...formData, refresh_interval: parseInt(e.target.value) })}
+                                        onChange={(e) =>
+                                            setFormData({
+                                                ...formData,
+                                                refresh_interval: clampInterval(e.target.value, 1, 60),
+                                            })
+                                        }
                                     />
                                 </div>
                             )}
@@ -354,7 +367,12 @@ function Settings() {
                                         min="1"
                                         max="60"
                                         value={formData.sync_interval}
-                                        onChange={(e) => setFormData({ ...formData, sync_interval: parseInt(e.target.value) })}
+                                        onChange={(e) =>
+                                            setFormData({
+                                                ...formData,
+                                                sync_interval: clampInterval(e.target.value, 1, 60),
+                                            })
+                                        }
                                     />
                                 </div>
                             )}

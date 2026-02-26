@@ -156,6 +156,7 @@ impl TokenManager {
         // project_id 是可选的
         let project_id = token_obj.get("project_id")
             .and_then(|v| v.as_str())
+            .filter(|s| !s.is_empty())
             .map(|s| s.to_string());
         
         // 【新增】提取订阅等级 (subscription_tier 为 "FREE" | "PRO" | "ULTRA")
@@ -382,9 +383,20 @@ impl TokenManager {
                 }
             }
 
-            // 4. 确保有 project_id
+            // 4. 确保有 project_id（过滤空字符串，避免 projects/ 触发 400）
             let project_id = if let Some(pid) = &token.project_id {
-                pid.clone()
+                if pid.is_empty() {
+                    tracing::debug!("账号 {} 的 project_id 为空，尝试重新获取...", token.email);
+                    None
+                } else {
+                    Some(pid.clone())
+                }
+            } else {
+                None
+            };
+
+            let project_id = if let Some(pid) = project_id {
+                pid
             } else {
                 tracing::debug!("账号 {} 缺少 project_id，尝试获取...", token.email);
                 match crate::proxy::project_resolver::fetch_project_id(&token.access_token).await {

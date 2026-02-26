@@ -53,6 +53,9 @@ pub fn transform_openai_request(request: &OpenAIRequest, project_id: &str, mappe
     if global_thought_sig.is_some() {
         tracing::debug!("从全局存储获取到 thoughtSignature (长度: {})", global_thought_sig.as_ref().unwrap().len());
     }
+    let is_thinking_model =
+        mapped_model.to_lowercase().contains("thinking")
+        || request.model.to_lowercase().contains("thinking");
 
     // 2. 构建 Gemini contents (过滤掉 system)
     let contents: Vec<Value> = request
@@ -164,6 +167,9 @@ pub fn transform_openai_request(request: &OpenAIRequest, project_id: &str, mappe
                     // [修复] 为该消息内的所有工具调用注入 thoughtSignature (PR #114 优化)
                     if let Some(ref sig) = global_thought_sig {
                         func_call_part["thoughtSignature"] = json!(sig);
+                    } else if is_thinking_model {
+                        // Keep Vertex/Gemini tool calls valid when upstream signature is absent.
+                        func_call_part["thoughtSignature"] = json!("skip_thought_signature_validator");
                     }
 
                     parts.push(func_call_part);
@@ -260,7 +266,9 @@ pub fn transform_openai_request(request: &OpenAIRequest, project_id: &str, mappe
                 func
             };
 
-            if let Some(name) = gemini_func.get("name").and_then(|v| v.as_str()) {
+            let name_opt = gemini_func.get("name").and_then(|v| v.as_str()).map(|s| s.to_string());
+
+            if let Some(name) = &name_opt {
                 // 跳过内置联网工具名称，避免重复定义
                 if name == "web_search" || name == "google_search" || name == "web_search_20250305" {
                     continue;
@@ -271,6 +279,10 @@ pub fn transform_openai_request(request: &OpenAIRequest, project_id: &str, mappe
                         obj.insert("name".to_string(), json!("shell"));
                     }
                 }
+            } else {
+                 // [FIX] 如果工具没有名称，视为无效工具直接跳过 (防止 REQUIRED_FIELD_MISSING)
+                 tracing::warn!("[OpenAI-Request] Skipping tool without name: {:?}", gemini_func);
+                 continue;
             }
 
             // [NEW CRITICAL FIX] 清除函数定义根层级的非法字段 (解决报错持久化)
@@ -279,6 +291,7 @@ pub fn transform_openai_request(request: &OpenAIRequest, project_id: &str, mappe
                 obj.remove("strict");
                 obj.remove("additionalProperties");
                 obj.remove("type"); // [NEW] Gemini 不支持在 FunctionDeclaration 根层级出现 type: "function"
+                obj.remove("external_web_access"); // [FIX #1278] Remove invalid field injected by OpenAI Codex
             }
 
             if let Some(params) = gemini_func.get_mut("parameters") {

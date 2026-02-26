@@ -48,9 +48,20 @@ pub fn wrap_request(body: &Value, project_id: &str, mapped_model: &str) -> Value
                         });
 
                         // 2. 清洗剩余 Schema
+                        // [FIX] Gemini CLI 使用 parametersJsonSchema，而标准 Gemini API 使用 parameters
+                        // 需要将 parametersJsonSchema 重命名为 parameters
                         for decl in decls_arr {
-                            if let Some(params) = decl.get_mut("parameters") {
-                                crate::proxy::common::json_schema::clean_json_schema(params);
+                            // 检测并转换字段名
+                            if let Some(decl_obj) = decl.as_object_mut() {
+                                // 如果存在 parametersJsonSchema，将其重命名为 parameters
+                                if let Some(params_json_schema) = decl_obj.remove("parametersJsonSchema") {
+                                    let mut params = params_json_schema;
+                                    crate::proxy::common::json_schema::clean_json_schema(&mut params);
+                                    decl_obj.insert("parameters".to_string(), params);
+                                } else if let Some(params) = decl_obj.get_mut("parameters") {
+                                    // 标准 parameters 字段
+                                    crate::proxy::common::json_schema::clean_json_schema(params);
+                                }
                             }
                         }
                     }
@@ -65,6 +76,30 @@ pub fn wrap_request(body: &Value, project_id: &str, mapped_model: &str) -> Value
     // Inject googleSearch tool if needed
     if config.inject_google_search {
         crate::proxy::mappers::common_utils::inject_google_search_tool(&mut inner_request);
+    }
+
+    // [FIX] Ensure maxOutputTokens is larger than thinkingBudget for v1internal requests.
+    let req_max_tokens = inner_request.get("max_tokens").and_then(|v| v.as_u64());
+    if let Some(gen_config) = inner_request
+        .as_object_mut()
+        .and_then(|o| o.get_mut("generationConfig"))
+        .and_then(|v| v.as_object_mut())
+    {
+        if let Some(budget) = gen_config
+            .get("thinkingConfig")
+            .and_then(|cfg| cfg.get("thinkingBudget"))
+            .and_then(|v| v.as_u64())
+        {
+            let current_max = gen_config
+                .get("maxOutputTokens")
+                .and_then(|v| v.as_u64())
+                .or(req_max_tokens);
+            let min_required_max = budget + 8192;
+
+            if current_max.is_none() || current_max.is_some_and(|m| m <= budget) {
+                gen_config.insert("maxOutputTokens".to_string(), json!(min_required_max));
+            }
+        }
     }
 
     // Inject imageConfig if present (for image generation models)

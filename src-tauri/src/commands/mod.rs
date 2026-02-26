@@ -58,7 +58,11 @@ pub async fn add_account(
 
 /// 删除账号
 #[tauri::command]
-pub async fn delete_account(app: tauri::AppHandle, account_id: String) -> Result<(), String> {
+pub async fn delete_account(
+    app: tauri::AppHandle,
+    proxy_state: tauri::State<'_, crate::commands::proxy::ProxyServiceState>,
+    account_id: String,
+) -> Result<(), String> {
     modules::logger::log_info(&format!("收到删除账号请求: {}", account_id));
     modules::delete_account(&account_id).map_err(|e| {
         modules::logger::log_error(&format!("删除账号失败: {}", e));
@@ -68,6 +72,8 @@ pub async fn delete_account(app: tauri::AppHandle, account_id: String) -> Result
 
     // 强制同步托盘
     crate::modules::tray::update_tray_menus(&app);
+    // 如果反代已启动，立刻重载内存账号池，避免已删除账号继续参与调度
+    let _ = crate::commands::proxy::reload_proxy_accounts(proxy_state).await;
     Ok(())
 }
 
@@ -75,6 +81,7 @@ pub async fn delete_account(app: tauri::AppHandle, account_id: String) -> Result
 #[tauri::command]
 pub async fn delete_accounts(
     app: tauri::AppHandle,
+    proxy_state: tauri::State<'_, crate::commands::proxy::ProxyServiceState>,
     account_ids: Vec<String>,
 ) -> Result<(), String> {
     modules::logger::log_info(&format!(
@@ -88,6 +95,8 @@ pub async fn delete_accounts(
 
     // 强制同步托盘
     crate::modules::tray::update_tray_menus(&app);
+    // 如果反代已启动，立刻重载内存账号池，避免已删除账号继续参与调度
+    let _ = crate::commands::proxy::reload_proxy_accounts(proxy_state).await;
     Ok(())
 }
 
@@ -455,9 +464,38 @@ pub async fn import_from_db(app: tauri::AppHandle) -> Result<Account, String> {
     Ok(account)
 }
 
+fn validate_path(path: &str) -> Result<(), String> {
+    if path.contains("..") {
+        return Err("非法路径: 不允许目录遍历".to_string());
+    }
+
+    let lower_path = path.to_lowercase();
+    let sensitive_prefixes = [
+        "/etc/",
+        "/var/spool/cron",
+        "/root/",
+        "/proc/",
+        "/sys/",
+        "/dev/",
+        "c:\\windows",
+        "c:\\users\\administrator",
+        "c:\\pagefile.sys",
+    ];
+
+    for prefix in sensitive_prefixes {
+        if lower_path.starts_with(prefix) {
+            return Err(format!("安全拒绝: 禁止访问系统敏感路径 ({})", prefix));
+        }
+    }
+
+    Ok(())
+}
+
 #[tauri::command]
 #[allow(dead_code)]
 pub async fn import_custom_db(app: tauri::AppHandle, path: String) -> Result<Account, String> {
+    validate_path(&path)?;
+
     // 调用重构后的自定义导入函数
     let mut account = modules::migration::import_from_custom_db_path(path).await?;
 
@@ -511,6 +549,7 @@ pub async fn sync_account_from_db(app: tauri::AppHandle) -> Result<Option<Accoun
 /// 保存文本文件 (绕过前端 Scope 限制)
 #[tauri::command]
 pub async fn save_text_file(path: String, content: String) -> Result<(), String> {
+    validate_path(&path)?;
     std::fs::write(&path, content).map_err(|e| format!("写入文件失败: {}", e))
 }
 

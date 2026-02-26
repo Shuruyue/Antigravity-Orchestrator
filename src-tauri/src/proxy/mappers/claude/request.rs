@@ -502,8 +502,9 @@ fn build_contents(
                 for item in blocks {
                     match item {
                         ContentBlock::Text { text } => {
-                            if text != "(no content)" {
-                                parts.push(json!({"text": text}));
+                            let trimmed = text.trim();
+                            if text != "(no content)" && !trimmed.is_empty() {
+                                parts.push(json!({"text": trimmed}));
                             }
                         }
                         ContentBlock::Thinking { thinking, signature, .. } => {
@@ -513,9 +514,9 @@ fn build_contents(
                             // to avoid "thinking is disabled but message contains thinking" error
                             if !is_thinking_enabled {
                                 tracing::warn!("[Claude-Request] Thinking disabled. Downgrading thinking block to text.");
-                                if !thinking.is_empty() {
+                                if !thinking.trim().is_empty() {
                                     parts.push(json!({
-                                        "text": thinking
+                                        "text": thinking.trim()
                                     }));
                                 }
                                 continue;
@@ -848,6 +849,12 @@ fn build_generation_config(
 
             config["thinkingConfig"] = thinking_config;
         }
+    } else if is_thinking_enabled {
+        // Auto-enabled thinking models (e.g. Opus) still require a concrete budget.
+        config["thinkingConfig"] = json!({
+            "includeThoughts": true,
+            "thinkingBudget": 10000
+        });
     }
 
     // 其他参数
@@ -861,40 +868,40 @@ fn build_generation_config(
         config["topK"] = json!(top_k);
     }
 
-    // Effort level mapping (Claude API v2.0.67+)
-    // Maps Claude's output_config.effort to Gemini's effortLevel
-    if let Some(output_config) = &claude_req.output_config {
-        if let Some(effort) = &output_config.effort {
-            config["effortLevel"] = json!(match effort.to_lowercase().as_str() {
-                "high" => "HIGH",
-                "medium" => "MEDIUM",
-                "low" => "LOW",
-                _ => "HIGH" // Default to HIGH for unknown values
-            });
-            tracing::debug!(
-                "[Generation-Config] Effort level set: {} -> {}",
-                effort,
-                config["effortLevel"]
-            );
-        }
-    }
-
     // web_search 强制 candidateCount=1
     /*if has_web_search {
         config["candidateCount"] = json!(1);
     }*/
 
-    // max_tokens 映射为 maxOutputTokens
-    config["maxOutputTokens"] = json!(64000);
+    let model_lower = claude_req.model.to_lowercase();
+    let mut final_max_tokens = claude_req.max_tokens.map(|v| v as u64).unwrap_or(64000);
 
-    // [优化] 设置全局停止序列，防止流式输出冗余 (参考 done-hub)
-    config["stopSequences"] = json!([
-        "<|user|>",
-        "<|endoftext|>",
-        "<|end_of_turn|>",
-        "[DONE]",
-        "\n\nHuman:"
-    ]);
+    // Opus 4.6 thinking needs strict alignment to avoid 400 errors on v1internal.
+    if is_thinking_enabled && model_lower.contains("claude-opus-4-6-thinking") {
+        final_max_tokens = 57344;
+    }
+
+    // Keep maxOutputTokens above thinkingBudget when thinking is enabled.
+    if let Some(budget) = config
+        .get("thinkingConfig")
+        .and_then(|t| t.get("thinkingBudget"))
+        .and_then(|v| v.as_u64())
+    {
+        if final_max_tokens <= budget {
+            final_max_tokens = budget + 8192;
+        }
+    }
+    config["maxOutputTokens"] = json!(final_max_tokens);
+
+    // Opus 4.6 thinking performs better without stopSequences in this proxy path.
+    if !(is_thinking_enabled && model_lower.contains("claude-opus-4-6-thinking")) {
+        config["stopSequences"] = json!([
+            "<|user|>",
+            "<|endoftext|>",
+            "<|end_of_turn|>",
+            "\n\nHuman:"
+        ]);
+    }
 
     config
 }
