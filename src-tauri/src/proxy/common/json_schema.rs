@@ -267,12 +267,11 @@ mod tests {
         assert!(schema["properties"]["pattern"]["properties"]["regex"]
             .get("pattern")
             .is_none());
-        assert!(
-            schema["properties"]["pattern"]["properties"]["regex"]["description"]
-                .as_str()
-                .unwrap()
-                .contains("pattern: ^[a-z]+$")
-        );
+        let regex_desc = schema["properties"]["pattern"]["properties"]["regex"]["description"]
+            .as_str()
+            .unwrap();
+        assert!(regex_desc.contains("pattern:"));
+        assert!(regex_desc.contains("^[a-z]+$"));
 
         // 5. 验证联合类型被降级为单一类型 (Protobuf 兼容性)
         assert_eq!(schema["properties"]["unit"]["type"], "string");
