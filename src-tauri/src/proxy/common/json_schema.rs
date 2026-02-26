@@ -94,9 +94,11 @@ fn clean_json_schema_recursive(value: &mut Value) {
             ];
 
             for (field, label) in validation_fields {
-                if let Some(val) = map.remove(field) {
-                    // 仅当值是简单类型时才迁移
+                if let Some(val) = map.get(field).cloned() {
+                    // 仅当值是简单类型时才迁移并移除字段。
+                    // 这样可以避免误删与关键字同名的业务属性（例如 properties.pattern）。
                     if val.is_string() || val.is_number() || val.is_boolean() {
+                        let _ = map.remove(field);
                         constraints.push(format!("{}: {}", label, val));
                     }
                 }
