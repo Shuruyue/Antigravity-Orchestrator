@@ -78,6 +78,30 @@ pub fn wrap_request(body: &Value, project_id: &str, mapped_model: &str) -> Value
         crate::proxy::mappers::common_utils::inject_google_search_tool(&mut inner_request);
     }
 
+    // [FIX] Ensure maxOutputTokens is larger than thinkingBudget for v1internal requests.
+    let req_max_tokens = inner_request.get("max_tokens").and_then(|v| v.as_u64());
+    if let Some(gen_config) = inner_request
+        .as_object_mut()
+        .and_then(|o| o.get_mut("generationConfig"))
+        .and_then(|v| v.as_object_mut())
+    {
+        if let Some(budget) = gen_config
+            .get("thinkingConfig")
+            .and_then(|cfg| cfg.get("thinkingBudget"))
+            .and_then(|v| v.as_u64())
+        {
+            let current_max = gen_config
+                .get("maxOutputTokens")
+                .and_then(|v| v.as_u64())
+                .or(req_max_tokens);
+            let min_required_max = budget + 8192;
+
+            if current_max.is_none() || current_max.is_some_and(|m| m <= budget) {
+                gen_config.insert("maxOutputTokens".to_string(), json!(min_required_max));
+            }
+        }
+    }
+
     // Inject imageConfig if present (for image generation models)
     if let Some(image_config) = config.image_config {
          if let Some(obj) = inner_request.as_object_mut() {
