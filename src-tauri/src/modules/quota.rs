@@ -181,8 +181,13 @@ pub async fn fetch_quota_inner(access_token: &str, email: &str) -> crate::error:
                         
                         let reset_time = quota_info.reset_time.unwrap_or_default();
                         
-                        // 只保存我们关心的模型
-                        if name.contains("gemini") || name.contains("claude") {
+                        // 只保存我们关心的模型，且避免把内部 chat 条目混入配额
+                        if name.starts_with("gemini")
+                            || name.starts_with("claude")
+                            || name.starts_with("gpt")
+                            || name.starts_with("image")
+                            || name.starts_with("imagen")
+                        {
                             quota_data.add_model(name, percentage, reset_time);
                         }
                     }
